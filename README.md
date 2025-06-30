@@ -46,7 +46,8 @@ psycopg[binary]
 pip3 install -r requirements.txt
 ```
 
-4. initialize a cockroach database to act as a vectorDB:
+
+## install and Initialize a cockroach database to act as a vectorDB:
 
 
 ** download cockroachdb binary (you can use a single instance for testing) 
@@ -80,7 +81,7 @@ This local instance of cockroachDB will run listening on port 26257 (for SQL and
 
 This local instance will also listen on port 8080 with its web-browser-serving dbconsole UI 
 
-From a separate shell you can connect to this instance, create a database and the tables needed to begin:
+## From a separate shell you can connect to this instance, create a database and the tables needed to begin:
 
 to execute all the SQL commands needed plus some test queries from the root of this project do:
 ```
@@ -93,7 +94,7 @@ If you wish to execute other sql -- The following command connects using the pro
 cockroach sql --insecure
 ```
 
-5. To run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space do:
+## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space do:
 
 ```
 python3 battle_bot.py
