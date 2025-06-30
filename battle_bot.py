@@ -1,6 +1,6 @@
 import random
-import time
-import psycopg2  # Requires `pip install psycopg2`
+import time,sys
+import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY  # Replace with actual module or inline
 
 ''' 
@@ -20,7 +20,7 @@ class AutomatedPlayer:
         self.quadrants = [1, 2, 3, 4]
 
     def get_connection(self):
-        return psycopg2.connect(**self.db_config)
+        return psycopg.connect(**self.db_config)
 
     def run(self):
         while True:
@@ -56,23 +56,25 @@ class AutomatedPlayer:
                             print("🚨 Potential collision detected:")
                             for row in results:
                                 print(f"  - Class: {row[0]}, Match: {row[3]}%, Anchor: {row[2]}")
+                                if(row[3]>99):
+                                    print(f"\n\nPERFECT HIT -- EXITING PROGRAM")
+                                    sys.exit(0)
+                            time.sleep(3) ## give user a chance to see results
+                            
                         else:
                             print("✅ No collisions — placement is clear.")
             except Exception as e:
                 print(f"❌ Error during DB query: {e}")
 
-            time.sleep(3)
+            time.sleep(1)
 
 # --- Example usage ---
 if __name__ == "__main__":
     db_config = {
         'host': 'localhost',
         'port': 26257,
-        'dbname': 'bank',
-        'user': 'your_user',
-        'password': 'your_password',
-        'sslmode': 'require',
-        'sslrootcert': '/path/to/your/ca.crt'
+        'dbname': 'vb',
+        'user': 'root'
     }
 
     player = AutomatedPlayer(db_config)

@@ -46,8 +46,67 @@ psycopg[binary]
 pip3 install -r requirements.txt
 ```
 
-4. To run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space do:
+4. initialize a cockroach database to act as a vectorDB:
+
+
+** download cockroachdb binary (you can use a single instance for testing) 
+
+goto:  https://www.cockroachlabs.com/docs/v25.2/install-cockroachdb-mac.html 
+
+(There are options there for Linux and Windows as well)
+
+for mac you do:
+```
+brew install cockroachdb/tap/cockroach
+```
+
+You can then check for location/existence of cockroachDB:
+```
+which cockroach
+```
+
+You can start a single node instance of cockroachDB in the following way:
+see full instructions here:  https://www.cockroachlabs.com/docs/stable/cockroach-start-single-node
+
+to keep things as simple as possible, start an instance requiring no TLS (Transport Layer Security):
 
 ```
-python battle_bot.py
+cockroach start-single-node --insecure --accept-sql-without-tls --background
 ```
+
+By default:
+
+This local instance of cockroachDB will run listening on port 26257 (for SQL and commandline connections)
+
+This local instance will also listen on port 8080 with its web-browser-serving dbconsole UI 
+
+From a separate shell you can connect to this instance, create a database and the tables needed to begin:
+
+to execute all the SQL commands needed plus some test queries from the root of this project do:
+```
+cockroach sql --insecure -f crdb_setup.sql
+```
+
+If you wish to execute other sql -- The following command connects using the provided SQL CLI:
+
+```
+cockroach sql --insecure
+```
+
+5. To run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space do:
+
+```
+python3 battle_bot.py
+```
+
+#### random vector details:
+-- NB there are options in terms of the search algorithm chosen:
+
+-- L2 (Euclidean)  [default]
+SELECT ... ORDER BY vector <-> '[query_vector]' LIMIT 5
+
+-- Cosine
+SELECT ... ORDER BY vector <=> '[query_vector]' LIMIT 5
+
+-- Inner Product
+SELECT ... ORDER BY vector <#> '[query_vector]' LIMIT 5

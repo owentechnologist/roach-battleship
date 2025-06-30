@@ -4,7 +4,7 @@ import sys
 def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
     anchorX=int(anchorX)
     anchorY=int(anchorY)
-    print(f'anchorX = {anchorX}  anchorY = {anchorY}')
+    print(f'ORIGINAL anchorX = {anchorX}  anchorY = {anchorY}')
     # make sure ship fits in our small grid 10x10:
 
     # NB: The position of X=0, Y=0 is the top left corner (not the bottom left)
@@ -45,7 +45,7 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         if anchorY>4:
             anchorY = 4
         anchor_point=anchorX+((anchorY*10)-10)
-        print(f'anchorX = {anchorX}  anchorY = {anchorY}')
+        print(f'CORRECTED anchorX = {anchorX}  anchorY = {anchorY} anchor_point = {anchor_point}')
 
         ship_points=[anchor_point,anchor_point+10,anchor_point+19,
                     anchor_point+20,anchor_point+21,anchor_point+29,
@@ -71,7 +71,7 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         if anchorY>5:
             anchorY = 5
         anchor_point=anchorX+((anchorY*10)-10)
-        print(f'anchorX = {anchorX}  anchorY = {anchorY} anchor_point = {anchor_point}')
+        print(f'CORRECTED anchorX = {anchorX}  anchorY = {anchorY} anchor_point = {anchor_point}')
         
         ship_points=[anchor_point,anchor_point+10,
                     anchor_point+20,anchor_point+30,
@@ -93,7 +93,7 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         if anchorY>7:
             anchorY = 7
         anchor_point=anchorX+((anchorY*10)-10)
-        print(f'anchorX = {anchorX}  anchorY = {anchorY} anchor_point = {anchor_point}')
+        print(f'CORRECTED anchorX = {anchorX}  anchorY = {anchorY} anchor_point = {anchor_point}')
         
         ship_points=[anchor_point,anchor_point+10,
                     anchor_point+20,anchor_point+30]
@@ -117,7 +117,7 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         if anchorY>7:
             anchorY = 7
         anchor_point=anchorX+((anchorY*10)-10)
-        print(f'anchorX = {anchorX}  anchorY = {anchorY}')
+        print(f'CORRECTED anchorX = {anchorX}  anchorY = {anchorY} anchor_point = {anchor_point}')
 
         ship_points=[anchor_point+1,anchor_point+2,anchor_point+3,
                      anchor_point+4,anchor_point+5,anchor_point+6,
