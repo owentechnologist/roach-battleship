@@ -52,10 +52,6 @@ pip3 install -r requirements.txt
 
 ** download cockroachdb binary (you can use a single instance for testing) 
 
-goto:  https://www.cockroachlabs.com/docs/v25.2/install-cockroachdb-mac.html 
-
-(There are options there for Linux and Windows as well)
-
 for mac you do:
 ```
 brew install cockroachdb/tap/cockroach
@@ -66,14 +62,20 @@ You can then check for location/existence of cockroachDB:
 which cockroach
 ```
 
-You can start a single node instance of cockroachDB in the following way:
-see full instructions here:  https://www.cockroachlabs.com/docs/stable/cockroach-start-single-node
+<em> See full instructions here:  https://www.cockroachlabs.com/docs/v25.2/install-cockroachdb-mac.html 
+
+(There are options there for Linux and Windows as well)
+</em>
+
+## You can start a single node instance of cockroachDB in the following way:
 
 to keep things as simple as possible, start an instance requiring no TLS (Transport Layer Security):
 
 ```
 cockroach start-single-node --insecure --accept-sql-without-tls --background
 ```
+
+<em>See full instructions here:  https://www.cockroachlabs.com/docs/stable/cockroach-start-single-node  </em>
 
 By default:
 
