@@ -102,6 +102,61 @@ cockroach sql --insecure
 python3 battle_bot.py
 ```
 
+## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
+
+example:
+```
+📡 Attempting to place a 'submarine' in quadrant 3 at anchor (2, 3)
+ORIGINAL anchorX = 2  anchorY = 3
+CORRECTED anchorX = 2  anchorY = 3 anchor_point = 22
+ Target generated submarine has anchor_point of 22
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  .  *  *  *  *  *  *  *  *  |
+| *  .  *  *  *  *  *  *  *  *  |
+| *  .  *  *  *  *  *  *  *  *  |
+| *  .  *  *  *  *  *  *  *  *  |
+| *  .  *  *  *  *  *  *  *  *  |
+| *  .  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+
+
+
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+✅ No collisions — placement is clear.
+
+📡 Attempting to place a 'submarine' in quadrant 1 at anchor (7, 3)
+ORIGINAL anchorX = 7  anchorY = 3
+CORRECTED anchorX = 7  anchorY = 3 anchor_point = 27
+ Target generated submarine has anchor_point of 27
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+
+
+
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+🚨 Potential collision detected:
+  - Class: submarine           , Match: 100.0%, Anchor: 27
+
+
+PERFECT HIT -- EXITING PROGRAM
+```
+
+## to view the activity in the database you can open the dbconsole in a browser:
+```
+https://localhost:8080
+````
+
+
 #### random vector details:
 -- NB there are options in terms of the search algorithm chosen:
 

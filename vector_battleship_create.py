@@ -135,7 +135,10 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
 
     for point in range(1,101):
         if point in ship_points:
-            ship_list.append(1.0)
+            if ship_type == 'submarine':
+                ship_list.append(.5) ## submerged
+            else:
+                ship_list.append(1.0) ## surface
         else:
             ship_list.append(0.0)
 
@@ -149,9 +152,11 @@ def print_ship(ship_list):
     for y in range(0,10):
         print("|",end="")
         for x in range(0,10):
-            if ship_list[x+(y*10)]>0:
+            if ship_list[x+(y*10)]==.5:  # submerged
+                print(' . ',end="")
+            if ship_list[x+(y*10)]==1: # surface
                 print('[ ]',end="")
-            else:
+            elif ship_list[x+(y*10)]==0: # nothing there
                 print(' * ',end="")
         print(" |")
 
