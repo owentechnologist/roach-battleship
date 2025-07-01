@@ -10,7 +10,7 @@ This class provides the behavior of an automated player who:
 3. picks an anchor point at random
 4. checks for collision between ship at anchor point in quadrant and ships in vector database
 5. prints out result
-6. sleeps for 3 seconds 
+6. sleeps for 3 seconds when it detects ships in the same quadrant and hones in on same quadrant 
 '''
 
 class AutomatedPlayer:
@@ -27,6 +27,7 @@ class AutomatedPlayer:
         nearby_ship = False
         suspect_quadrant = 1
         suspect_ship_type = 'submarine'
+        suspect_ship_reuse_count = 0
         while True:
             ship_type = random.choice(self.ship_types)
             quadrant = random.choice(self.quadrants)
@@ -35,7 +36,10 @@ class AutomatedPlayer:
             if(nearby_ship==True):
                 #do nearbyShip things
                 quadrant = suspect_quadrant
-                ship_type = suspect_ship_type
+                if(suspect_ship_reuse_count<5):
+                    ship_type = suspect_ship_type
+                else:
+                    suspect_ship_reuse_count=0
 
             print(f"\nAttempting to place a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
 
@@ -63,11 +67,14 @@ class AutomatedPlayer:
                         if results:
                             print("\nAt least one ship detected in quadrant:")
                             for row in results:
-                                print(f"  - Detected_Ship_Class: strip({row[0]}), Match_Percentage: {row[3]}%, Hidden_Anchor_Point: {row[2]}")
+                                val=row[0]
+                                val = val.strip()
+                                print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%, Hidden_Anchor_Point: {row[2]}")
                                 if(row[3]>self.match_percentage_threshold) and (row[3]<99):
-                                    print(f'\n📡 Honing in on quadrant {quadrant}')
+                                    print(f'\n📡 Honing in on quadrant {quadrant} with suspect_ship_type {suspect_ship_type} and suspect_ship_reuse_count {suspect_ship_reuse_count}')
                                     suspect_quadrant = quadrant
                                     suspect_ship_type = ship_type
+                                    suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
                                 if(row[3]>99):
                                     print(f"\n\nPERFECT HIT -- EXITING PROGRAM")

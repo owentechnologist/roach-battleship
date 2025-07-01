@@ -113,17 +113,32 @@ python3 battle_bot.py 25
 
 example:
 ```
+Attempting to place a 'submarine' in quadrant 1 at anchor (7, 9)
+ Target generated submarine has anchor_point of 47
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  *  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+| *  *  *  *  *  *  .  *  *  *  |
+
+
+
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0]
+
 At least one ship detected in quadrant:
-  - Detected_Ship_Class: strip(submarine           ), Match_Percentage: 36.6%, Hidden_Anchor_Point: 43
+  - Detected_Ship_Class: submarine, Match_Percentage: 50.0%, Hidden_Anchor_Point: 27
 
-📡 Honing in on quadrant 1
-  - Detected_Ship_Class: strip(submarine           ), Match_Percentage: 36.6%, Hidden_Anchor_Point: 27
+📡 Honing in on quadrant 1 with suspect_ship_type submarine and suspect_ship_reuse_count 0
+  - Detected_Ship_Class: submarine, Match_Percentage: 36.6%, Hidden_Anchor_Point: 43
 
-📡 Honing in on quadrant 1
+📡 Honing in on quadrant 1 with suspect_ship_type submarine and suspect_ship_reuse_count 1
 
-Attempting to place a 'submarine' in quadrant 1 at anchor (3, 9)
-ORIGINAL anchorX = 3  anchorY = 9
-CORRECTED anchorX = 3  anchorY = 5 anchor_point = 43
+Attempting to place a 'submarine' in quadrant 1 at anchor (3, 6)
  Target generated submarine has anchor_point of 43
 | *  *  *  *  *  *  *  *  *  *  |
 | *  *  *  *  *  *  *  *  *  *  |
@@ -141,7 +156,7 @@ CORRECTED anchorX = 3  anchorY = 5 anchor_point = 43
 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 At least one ship detected in quadrant:
-  - Detected_Ship_Class: strip(submarine           ), Match_Percentage: 100.0%, Hidden_Anchor_Point: 43
+  - Detected_Ship_Class: submarine, Match_Percentage: 100.0%, Hidden_Anchor_Point: 43
 
 
 PERFECT HIT -- EXITING PROGRAM
