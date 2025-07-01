@@ -78,12 +78,10 @@ class AutomatedPlayer:
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
-                                    time.sleep(3) ## give user a chance to see results
+                                    time.sleep(2) ## give user a chance to see results
                                 if(row[3]>99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     sys.exit(0)
-                            
-                            
                         else:
                             print("No ships detected in quadrant.")
                             nearby_ship = False

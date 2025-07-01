@@ -105,7 +105,7 @@ python3 battle_bot.py <match_percentage_threshold>
 Example:
 
 ```
-python3 battle_bot.py 25
+python3 battle_bot.py 55
 ```
 
 ## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
@@ -113,53 +113,80 @@ python3 battle_bot.py 25
 
 example:
 ```
-Attempting to place a 'submarine' in quadrant 1 at anchor (7, 9)
- Target generated submarine has anchor_point of 47
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
+Attempting to place a 'skiff' in quadrant 2 at anchor (3, 3)
+ Target generated skiff has anchor_point of 23
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~ | | ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~ | | ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~ | | ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~ | | ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
 
 
 
-[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0]
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.331, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.331, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.331, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.331, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+No ships detected in quadrant.
+
+Attempting to place a 'submarine' in quadrant 1 at anchor (3, 4)
+ Target generated submarine has anchor_point of 33
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  .  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  .  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  .  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  .  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  .  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  .  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+
+
+
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 At least one ship detected in quadrant:
-  - Detected_Ship_Class: submarine, Match_Percentage: 50.0%, Hidden_Anchor_Point: 27
+  - Detected_Ship_Class: submarine, Match_Percentage: 80.48%, Hidden_Anchor_Point: 43
 
 📡 Honing in on quadrant 1 with suspect_ship_type submarine and suspect_ship_reuse_count 0
-  - Detected_Ship_Class: submarine, Match_Percentage: 36.6%, Hidden_Anchor_Point: 43
+  - Detected_Ship_Class: submarine, Match_Percentage: 62.73%, Hidden_Anchor_Point: 27
 
 📡 Honing in on quadrant 1 with suspect_ship_type submarine and suspect_ship_reuse_count 1
 
-Attempting to place a 'submarine' in quadrant 1 at anchor (3, 6)
- Target generated submarine has anchor_point of 43
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  .  *  *  *  *  *  *  *  |
-| *  *  .  *  *  *  *  *  *  *  |
-| *  *  .  *  *  *  *  *  *  *  |
-| *  *  .  *  *  *  *  *  *  *  |
-| *  *  .  *  *  *  *  *  *  *  |
-| *  *  .  *  *  *  *  *  *  *  |
+...<a few tries later>...
+
+📡 Honing in on quadrant 1 with suspect_ship_type submarine and suspect_ship_reuse_count 6
+  - Detected_Ship_Class: submarine, Match_Percentage: 62.73%, Hidden_Anchor_Point: 43
+
+📡 Honing in on quadrant 1 with suspect_ship_type submarine and suspect_ship_reuse_count 7
+
+Attempting to place a 'submarine' in quadrant 1 at anchor (7, 3)
+ Target generated submarine has anchor_point of 27
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  .  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  .  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  .  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  .  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  .  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  .  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
+| ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  |
 
 
 
-[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1715, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 At least one ship detected in quadrant:
-  - Detected_Ship_Class: submarine, Match_Percentage: 100.0%, Hidden_Anchor_Point: 43
+  - Detected_Ship_Class: submarine, Match_Percentage: 100.0%, Hidden_Anchor_Point: 27
 
 
-PERFECT HIT -- EXITING PROGRAM
+        <****> AFTER 14 ATTEMPTS <****> 
+
+                PERFECT HIT -- EXITING PROGRAM
 ```
 
 ## to view the activity in the database you can open the dbconsole in a browser:
