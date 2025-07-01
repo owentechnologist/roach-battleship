@@ -25,18 +25,20 @@ class AutomatedPlayer:
 
     def run(self):
         nearby_ship = False
-        suspect_quadrant = 1
+        suspect_quadrant = 4
         suspect_ship_type = 'submarine'
         suspect_ship_reuse_count = 0
+        attempt_counter=0
         while True:
             ship_type = random.choice(self.ship_types)
             quadrant = random.choice(self.quadrants)
             anchor_x = random.randint(1, 10)
             anchor_y = random.randint(1, 10)
+            attempt_counter=attempt_counter+1
             if(nearby_ship==True):
                 #do nearbyShip things
                 quadrant = suspect_quadrant
-                if(suspect_ship_reuse_count<5):
+                if(suspect_ship_reuse_count<10):
                     ship_type = suspect_ship_type
                 else:
                     suspect_ship_reuse_count=0
@@ -76,10 +78,11 @@ class AutomatedPlayer:
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
+                                    time.sleep(3) ## give user a chance to see results
                                 if(row[3]>99):
-                                    print(f"\n\nPERFECT HIT -- EXITING PROGRAM")
+                                    print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     sys.exit(0)
-                            time.sleep(3) ## give user a chance to see results
+                            
                             
                         else:
                             print("No ships detected in quadrant.")
@@ -87,7 +90,7 @@ class AutomatedPlayer:
             except Exception as e:
                 print(f"❌ Error during processing: {e}")
 
-            time.sleep(1)
+            time.sleep(.3) #300 millis
 
 # --- Example usage ---
 if __name__ == "__main__":
