@@ -96,56 +96,52 @@ If you wish to execute other sql -- The following command connects using the pro
 cockroach sql --insecure
 ```
 
-## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space do:
+## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space:
 
 ```
-python3 battle_bot.py
+python3 battle_bot.py <match_percentage_threshold>
+```
+
+Example:
+
+```
+python3 battle_bot.py 25
 ```
 
 ## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
+## It will use the match_percentage_threshold as a guide to hone in on ship_type and quadrant which should speed up finding exact matches  (the lower the threshold, the more sticky the attampts will be to the same quadrant and ship_type)
 
 example:
 ```
-Attempting to place a 'submarine' in quadrant 3 at anchor (2, 3)
-ORIGINAL anchorX = 2  anchorY = 3
-CORRECTED anchorX = 2  anchorY = 3 anchor_point = 22
- Target generated submarine has anchor_point of 22
+At least one ship detected in quadrant:
+  - Detected_Ship_Class: strip(submarine           ), Match_Percentage: 36.6%, Hidden_Anchor_Point: 43
+
+📡 Honing in on quadrant 1
+  - Detected_Ship_Class: strip(submarine           ), Match_Percentage: 36.6%, Hidden_Anchor_Point: 27
+
+📡 Honing in on quadrant 1
+
+Attempting to place a 'submarine' in quadrant 1 at anchor (3, 9)
+ORIGINAL anchorX = 3  anchorY = 9
+CORRECTED anchorX = 3  anchorY = 5 anchor_point = 43
+ Target generated submarine has anchor_point of 43
 | *  *  *  *  *  *  *  *  *  *  |
 | *  *  *  *  *  *  *  *  *  *  |
-| *  .  *  *  *  *  *  *  *  *  |
-| *  .  *  *  *  *  *  *  *  *  |
-| *  .  *  *  *  *  *  *  *  *  |
-| *  .  *  *  *  *  *  *  *  *  |
-| *  .  *  *  *  *  *  *  *  *  |
-| *  .  *  *  *  *  *  *  *  *  |
 | *  *  *  *  *  *  *  *  *  *  |
 | *  *  *  *  *  *  *  *  *  *  |
+| *  *  .  *  *  *  *  *  *  *  |
+| *  *  .  *  *  *  *  *  *  *  |
+| *  *  .  *  *  *  *  *  *  *  |
+| *  *  .  *  *  *  *  *  *  *  |
+| *  *  .  *  *  *  *  *  *  *  |
+| *  *  .  *  *  *  *  *  *  *  |
 
 
 
-[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-No collisions — placement is clear.
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-Attempting to place a 'submarine' in quadrant 1 at anchor (7, 3)
-ORIGINAL anchorX = 7  anchorY = 3
-CORRECTED anchorX = 7  anchorY = 3 anchor_point = 27
- Target generated submarine has anchor_point of 27
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  .  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-| *  *  *  *  *  *  *  *  *  *  |
-
-
-
-[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-Potential collision detected:
-  - Class: submarine           , Match: 100.0%, Anchor: 27
+At least one ship detected in quadrant:
+  - Detected_Ship_Class: strip(submarine           ), Match_Percentage: 100.0%, Hidden_Anchor_Point: 43
 
 
 PERFECT HIT -- EXITING PROGRAM
