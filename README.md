@@ -1,3 +1,5 @@
+![vector battleship](./battleship.png)
+
 # roach-battleship
 This repo is a reworking and expansion on the otVectorBattleship repo.  This version uses CockroachDB as the vectorDB
 
