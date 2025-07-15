@@ -1,4 +1,4 @@
-import sys
+import sys,random
 
 # accepts ship_type of 'submarine', 'destroyer','aircraft_carrier','skiff'
 def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
@@ -57,11 +57,11 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         # if ship_type == submarine:
         # anchor values for y must be lower than 6
         # anchor values for x must be between 1 and 10
-        #           []        <-- anchor_point 
-        #           []        <-- anchor_point + 10
-        #           []        <-- anchor_point + 20
-        #           []        <-- anchor_point + 30
-        #           []        <-- anchor_point + 40
+        #           .        <-- anchor_point 
+        #           .        <-- anchor_point + 10
+        #           .        <-- anchor_point + 20
+        #           .        <-- anchor_point + 30
+        #           .        <-- anchor_point + 40
         if anchorX <= 0:
             anchorX = 1
         if anchorX > 10:
@@ -81,9 +81,9 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         # if ship_type == skiff:
         # anchor values for y must be lower than 7
         # anchor values for x must be between 1 and 10
-        #           []        <-- anchor_point 
-        #           []        <-- anchor_point + 10
-        #           []        <-- anchor_point + 20
+        #           | |        <-- anchor_point 
+        #           | |       <-- anchor_point + 10
+        #           | |       <-- anchor_point + 20
         if anchorX <= 0:
             anchorX = 1
         if anchorX > 10:
@@ -108,8 +108,6 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         # [][][][][][][][][]
         # [][][][][][][][][]
         #   [][][][][][]
-        if anchorX<2:
-            anchorX = 2
         if anchorX>2:
             anchorX = 2
         if anchorY<1:
@@ -130,7 +128,25 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
                      anchor_point+31,anchor_point+32,anchor_point+33,
                      anchor_point+34,anchor_point+35,anchor_point+36]
 
-    print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
+    if ship_type == 'flotsam':
+        # if ship_type == flotsam:
+        # this is not a ship it is garbage/white noise
+        # anchor values are ignored each point is assigned a random value
+        # result may be something like this:
+        # []\ \[][][][] . [][]
+        #   . [][]| |[] . [][][]
+        #   [] . [][][][]
+        anchorX = 1
+        anchorY = 3
+        anchor_point=30    
+        ship_points=[anchor_point,anchor_point+2,anchor_point+3,
+                     anchor_point+11,anchor_point+14,anchor_point+15,
+                     anchor_point+20,anchor_point+22,anchor_point+24,anchor_point+26,
+                     anchor_point+30,anchor_point+31,anchor_point+34,anchor_point+35,anchor_point+36,anchor_point+37]
+
+
+    #print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
+    print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10))}')
     ship_list=[]
 
     for point in range(1,101):
@@ -139,6 +155,8 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
                 ship_list.append(.1715) ## submerged
             elif ship_type == 'skiff':
                 ship_list.append(4.331) ## small skiff
+            elif ship_type == 'flotsam':
+                ship_list.append(random.uniform(0, 9)) ## small skiff
             else:
                 ship_list.append(1.0) ## large surface ship
         else:
@@ -160,7 +178,7 @@ def print_ship(ship_list):
                 print('| |',end="")
             if ship_list[x+(y*10)]==1: # surface
                 print('[ ]',end="")
-            elif ship_list[x+(y*10)]==0: # nothing there
+            elif ship_list[x+(y*10)]==0: # nothing or garbage there
                 print(' ~ ',end="")
         print(" |")
 

@@ -1,8 +1,7 @@
 import random
 import time,sys
 import psycopg 
-from vector_battleship_create import make_ship_shape_from_anchorXY  # Replace with actual module or inline
-
+from vector_battleship_create import make_ship_shape_from_anchorXY  
 ''' 
 This class provides the behavior of an automated player who:
 1. picks a quadrant at random
@@ -29,12 +28,15 @@ class AutomatedPlayer:
         suspect_ship_type = 'submarine'
         suspect_ship_reuse_count = 0
         attempt_counter=0
-        while True:
+        attempt_counter_exceeded=False
+        while attempt_counter_exceeded==False:
             ship_type = random.choice(self.ship_types)
             quadrant = random.choice(self.quadrants)
             anchor_x = random.randint(1, 10)
             anchor_y = random.randint(1, 10)
             attempt_counter=attempt_counter+1
+            if(attempt_counter>100):
+                attempt_counter_exceeded=True
             if(nearby_ship==True):
                 #do nearbyShip things
                 quadrant = suspect_quadrant
