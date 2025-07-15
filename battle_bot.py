@@ -9,7 +9,7 @@ This class provides the behavior of an automated player who:
 3. picks an anchor point at random
 4. checks for collision between ship at anchor point in quadrant and ships in vector database
 5. prints out result
-6. sleeps for 3 seconds when it detects ships in the same quadrant and hones in on same quadrant 
+6. sleeps for 1 second when it detects ships in the same quadrant and hones in on same quadrant 
 '''
 
 class AutomatedPlayer:
@@ -80,19 +80,19 @@ class AutomatedPlayer:
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
-                                    time.sleep(2) ## give user a chance to see results
+                                    time.sleep(1) ## give user a chance to notice results
                                 if(row[3]>99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     sys.exit(0)
                         else:
-                            print("No ships detected in quadrant.")
+                            print("No simlar and/or nearby ships detected in quadrant.")
                             nearby_ship = False
             except Exception as e:
                 print(f"❌ Error during processing: {e}")
 
             time.sleep(.3) #300 millis
 
-# --- Example usage ---
+# --- Likely entry point for the python interpretor ---
 if __name__ == "__main__":
     db_config = {
         'host': 'localhost',

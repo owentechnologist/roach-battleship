@@ -98,6 +98,12 @@ If you wish to execute other sql -- The following command connects using the pro
 cockroach sql --insecure
 ```
 
+A sample query you may wish to run:
+
+```
+select anchorpoint,battleship_class,quadrant from battleship order by quadrant asc;
+```
+
 ## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space:
 
 ```

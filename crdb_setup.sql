@@ -151,3 +151,6 @@ WHERE quadrant = 1
   AND (bs.coordinates_embedding <-> tv.target )  <= 3
 ORDER BY "Percent Match" DESC
 LIMIT 2;
+
+-- remove this data (it is expected that you will utilize 'populate_quadrants.py')
+DELETE FROM battleship WHERE 1=1;
