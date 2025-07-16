@@ -34,10 +34,7 @@ UPDATE battleship SET coordinates_embedding ='[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 
 UPDATE battleship SET coordinates_embedding='[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]' WHERE anchorpoint=52;
 
--- some useful calculations: (the larger the number the greater the euclidian distance)
--- <= 0.33 filters is roughly ~75%+ similarity or better
--- <= 1 filters to ~50%+ similarity or better
--- <= 4 corresponds to ~20% match or higher
+
 -- filter on percentage match option: 
 -- ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 75
 
@@ -48,7 +45,7 @@ SELECT battleship_class, pk, anchorpoint,
 ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 4
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 75
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
@@ -61,7 +58,7 @@ ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100,
   ) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 4
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 75
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
@@ -75,7 +72,7 @@ ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100,
   ) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 4
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 75
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
@@ -88,7 +85,7 @@ ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100,
   ) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 3
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 75
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
@@ -101,7 +98,7 @@ ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100,
   ) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 4
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 35
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
@@ -114,7 +111,7 @@ ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100,
   ) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 4
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 45
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
@@ -131,24 +128,24 @@ SELECT
   ) AS "Percent Match"
 FROM battleship, target_vector 
 WHERE quadrant = 1
-  AND (coordinates_embedding <-> v)  <= 4
+  AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= 25
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
 
-WITH target_vector AS (SELECT '[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]'::vector AS "target"
+WITH target_vector AS (SELECT '[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]'::vector AS "tv"
 )
 SELECT
   'DESIGNED TO MISS' as "tv.target DESIGNED TO MISS",
   bs.battleship_class,
   bs.pk,
   bs.anchorpoint,
-  ROUND((1 / (1 + (bs.coordinates_embedding <-> tv.target ))) * 100,
+  ROUND((1 / (1 + (bs.coordinates_embedding <-> tv ))) * 100,
     2
   ) AS "Percent Match"
 FROM battleship bs, target_vector tv
 WHERE quadrant = 1
-  AND (bs.coordinates_embedding <-> tv.target )  <= 3
+  AND ROUND((1 / (1 + (coordinates_embedding <-> tv))) * 100, 2) >= 50
 ORDER BY "Percent Match" DESC
 LIMIT 2;
 
