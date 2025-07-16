@@ -29,10 +29,14 @@ class AutomatedPlayer:
         suspect_ship_reuse_count = 0
         attempt_counter=0
         attempt_counter_exceeded=False
+        suspect_ship_reuse_x_set= {0,}
         while attempt_counter_exceeded==False:
             ship_type = random.choice(self.ship_types)
             quadrant = random.choice(self.quadrants)
             anchor_x = random.randint(1, 10)
+            while anchor_x in suspect_ship_reuse_x_set:
+                anchor_x = random.randint(1, 14)
+            suspect_ship_reuse_x_set.add(anchor_x)
             anchor_y = random.randint(1, 10)
             attempt_counter=attempt_counter+1
             if(attempt_counter>100):
@@ -44,8 +48,12 @@ class AutomatedPlayer:
                     ship_type = suspect_ship_type
                 else:
                     suspect_ship_reuse_count=0
+                    suspect_ship_reuse_x_set.clear()
+            else:
+                #do dissimilar ship things:
+                suspect_ship_reuse_x_set.clear()
 
-            print(f"\nAttempting to place a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
+            print(f"\nTargeting a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
 
             vector = make_ship_shape_from_anchorXY(anchor_x, anchor_y, ship_type)
             vector_string = "[" + ", ".join(map(str, vector)) + "]"
@@ -58,7 +66,7 @@ class AutomatedPlayer:
                 ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) AS "Percent Match"
             FROM battleship, target_vector 
             WHERE quadrant = {quadrant}
-              AND (coordinates_embedding <-> v) <= 4
+              AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= {self.match_percentage_threshold}
             ORDER BY "Percent Match" DESC
             LIMIT 2;
             """
@@ -83,6 +91,7 @@ class AutomatedPlayer:
                                     time.sleep(1) ## give user a chance to notice results
                                 if(row[3]>99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
+                                    self.blast_ship_out_of_existence(row[1])
                                     sys.exit(0)
                         else:
                             print("No simlar and/or nearby ships detected in quadrant.")
@@ -91,6 +100,20 @@ class AutomatedPlayer:
                 print(f"❌ Error during processing: {e}")
 
             time.sleep(.3) #300 millis
+        ## end of condition check for attempt_counter<max_attempts
+        print('\n\n\t<****> The bot has used up all 100 of its attempts, Exiting...\n')
+        sys.exit(0)
+
+    def blast_ship_out_of_existence(self,pk):
+        print(f'\n\n%^%^%^%^***. KABLOOEY!!!!! \n\ndeleting row wit PK == {pk}')
+        query = f"DELETE FROM battleship WHERE PK=%s::UUID;"
+        args=(pk,)
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(query,args)
+        except Exception as e:
+            print(f"❌ Error during deletion of ship with PK of {pk}: \n{e}")
 
 # --- Likely entry point for the python interpretor ---
 if __name__ == "__main__":

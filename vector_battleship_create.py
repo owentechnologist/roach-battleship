@@ -156,7 +156,7 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
             elif ship_type == 'skiff':
                 ship_list.append(4.331) ## small skiff
             elif ship_type == 'flotsam':
-                ship_list.append(random.uniform(0, 9)) ## small skiff
+                ship_list.append(random.uniform(0, 9)) ## scattered junk
             else:
                 ship_list.append(1.0) ## large surface ship
         else:
