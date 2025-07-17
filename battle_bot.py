@@ -105,7 +105,7 @@ class AutomatedPlayer:
         sys.exit(0)
 
     def blast_ship_out_of_existence(self,pk):
-        print(f'\n\n%^%^%^%^***. KABLOOEY!!!!! \n\ndeleting row wit PK == {pk}')
+        print(f'\n\n%^%^%^%^***. KABLOOEY!!!!! \n\ndeleting row with PK == {pk}')
         query = f"DELETE FROM battleship WHERE PK=%s::UUID;"
         args=(pk,)
         try:
