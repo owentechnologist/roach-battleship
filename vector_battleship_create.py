@@ -152,33 +152,38 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
     for point in range(1,101):
         if point in ship_points:
             if ship_type == 'submarine':
-                ship_list.append(.1715) ## submerged
+                ship_list.append(point*.0011) #ship_list.append(.1715) ## submerged
             elif ship_type == 'skiff':
-                ship_list.append(4.331) ## small skiff
+                ship_list.append(point*.004) # ship_list.append(4.331) ## small skiff
+            elif ship_type == 'destroyer':
+                ship_list.append(point*.007) #ship_list.append(.1715) ## submerged
             elif ship_type == 'flotsam':
                 ship_list.append(random.uniform(0, 9)) ## scattered junk
             else:
-                ship_list.append(1.0) ## large surface ship
+                ship_list.append(point*.0095) # ship_list.append(1.0) ## Aircraft Carrier 
         else:
             ship_list.append(0.0)
 
-    print_ship(ship_list)
+    print_ship(ship_list,ship_type)
 
     print('\n\n')
     print(ship_list)
     return (ship_list)
 
-def print_ship(ship_list):
+def print_ship(ship_list,ship_type):
     for y in range(0,10):
         print("|",end="")
         for x in range(0,10):
-            if ship_list[x+(y*10)]==.1715:  # submerged
-                print(' . ',end="")
-            if ship_list[x+(y*10)]==4.331:  # small skiff
-                print('| |',end="")
-            if ship_list[x+(y*10)]==1: # surface
-                print('[ ]',end="")
-            elif ship_list[x+(y*10)]==0: # nothing or garbage there
+            if ship_list[x+(y*10)]!=0:
+                if ship_type=='submarine': # submerged
+                    print(' . ',end="")
+                elif ship_type=='skiff':  # small skiff
+                    print('| |',end="")
+                elif ship_type=='destroyer' or ship_type=='aircraft_carrier': # surface
+                    print('[ ]',end="")
+                elif ship_type=='flotsam': ## garbage
+                    print('#',end="")
+            else: # nothing there, print a wave ~
                 print(' ~ ',end="")
         print(" |")
 

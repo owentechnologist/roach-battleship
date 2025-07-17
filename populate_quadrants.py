@@ -16,7 +16,7 @@ class Populator:
         current_quadrant = 1
         ship_type = 'submarine'
         current_ship_reuse_count = 0
-        pop_counter=0
+        pop_counter=1
         pop_counter_exceeded=False #based on number_of_objects
         while pop_counter_exceeded==False:
             quadrant = (current_quadrant %4)+1
