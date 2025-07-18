@@ -13,21 +13,17 @@ class Populator:
         return psycopg.connect(**self.db_config)
 
     def run(self):
-        current_quadrant = 1
-        ship_type = 'submarine'
-        current_ship_reuse_count = 0
+        current_quadrant = random.randint(1,4)
+        ship_type = random.choice(self.ship_types)
         pop_counter=1
         pop_counter_exceeded=False #based on number_of_objects
         while pop_counter_exceeded==False:
             quadrant = (current_quadrant %4)+1
             current_quadrant = current_quadrant+1
-            current_ship_reuse_count = current_ship_reuse_count+1
+            ship_type=self.ship_types[pop_counter%5] # cycle through the ship_types
             pop_counter=pop_counter+1
             if(pop_counter>self.number_of_objects):
                 pop_counter_exceeded=True        
-            if(current_ship_reuse_count>2): 
-                ship_type = random.choice(self.ship_types)
-                current_ship_reuse_count=0
             if ship_type=='flotsam':
                 anchor_x = 1
                 anchor_y = 1
@@ -35,8 +31,8 @@ class Populator:
                 anchor_x = random.randint(1,10)
                 anchor_y = random.randint(1,7)
             if ship_type=='destroyer':
-                anchor_x = random.randint(1,4)
-                anchor_y = random.randint(2,8)
+                anchor_x = random.randint(2,9)
+                anchor_y = random.randint(1,4)
             if ship_type=='aircraft_carrier':
                 anchor_x = random.randint(1,2)
                 anchor_y = random.randint(1,7)
@@ -54,7 +50,7 @@ class Populator:
             VALUES (%s,%s,%s,%s);
             """
             coordinates_embedding =  f'{vector_string}'
-            args = (ship_type, quadrant, (anchor_x+(anchor_y*10)),coordinates_embedding) 
+            args = (ship_type, quadrant, anchor_x+((anchor_y*10)-10),coordinates_embedding) 
             try:
                 with self.get_connection() as conn:
                     with conn.cursor() as cur:

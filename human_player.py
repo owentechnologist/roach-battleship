@@ -18,7 +18,7 @@ class HumanPlayer:
         return psycopg.connect(**self.db_config)
 
     def run(self):
-        attempt_counter=0
+        attempt_counter=1
         while attempt_counter<=self.max_attempts:
             ship_type_num=''
             while ship_type_num=='':
@@ -58,13 +58,11 @@ class HumanPlayer:
                         cur.execute(query)
                         results = cur.fetchall()
                         if results:
-                            print("\nAt least one ship detected in quadrant:")
+                            print(f"\nAt least one ship detected in quadrant {quadrant}:")
                             for row in results:
                                 val=row[0]
                                 val = val.strip()
                                 print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%")
-                                if(row[3]>self.match_percentage_threshold) and (row[3]<99):
-                                    print(f'\n Something interesting in quadrant {quadrant}')
                                     
                                 if(row[3]>99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")

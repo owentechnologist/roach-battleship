@@ -104,6 +104,9 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         # arbitrarily, aircraft_carriers are placed horizontally
         # anchor values for y must be between 1 and 7
         # anchor values for x must be between 1 and 2
+        # | anchor point is an empty space
+        # | 
+        # V
         #   [][][][][][]
         # [][][][][][][][][]
         # [][][][][][][][][]
@@ -146,21 +149,20 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
 
 
     #print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
-    print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10))}')
+    print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
     ship_list=[]
-
     for point in range(1,101):
         if point in ship_points:
             if ship_type == 'submarine':
-                ship_list.append(point*.0011) #ship_list.append(.1715) ## submerged
+                ship_list.append(point*.002) ## submerged
             elif ship_type == 'skiff':
-                ship_list.append(point*.004) # ship_list.append(4.331) ## small skiff
+                ship_list.append(point*.004) 
             elif ship_type == 'destroyer':
-                ship_list.append(point*.007) #ship_list.append(.1715) ## submerged
+                ship_list.append(point*.001) 
             elif ship_type == 'flotsam':
                 ship_list.append(random.uniform(0, 9)) ## scattered junk
             else:
-                ship_list.append(point*.0095) # ship_list.append(1.0) ## Aircraft Carrier 
+                ship_list.append(point*.0025) # ship_list.append(1.0) ## Aircraft Carrier 
         else:
             ship_list.append(0.0)
 
