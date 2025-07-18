@@ -113,7 +113,7 @@ python3 battle_bot.py <match_percentage_threshold>
 Example:
 
 ```
-python3 battle_bot.py 55
+python3 battle_bot.py 75
 ```
 
 ## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant

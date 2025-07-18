@@ -30,6 +30,7 @@ class AutomatedPlayer:
         attempt_counter=0
         attempt_counter_exceeded=False
         suspect_ship_reuse_x_set= {0,}
+        suspect_ship_reuse_y_set= {0,}
         while attempt_counter_exceeded==False:
             ship_type = random.choice(self.ship_types)
             quadrant = random.choice(self.quadrants)
@@ -38,6 +39,8 @@ class AutomatedPlayer:
                 anchor_x = random.randint(1, 14)
             suspect_ship_reuse_x_set.add(anchor_x)
             anchor_y = random.randint(1, 10)
+            while anchor_y in suspect_ship_reuse_y_set:
+                anchor_y = random.randint(1, 14)
             attempt_counter=attempt_counter+1
             if(attempt_counter>100):
                 attempt_counter_exceeded=True
@@ -49,9 +52,11 @@ class AutomatedPlayer:
                 else:
                     suspect_ship_reuse_count=0
                     suspect_ship_reuse_x_set.clear()
+                    suspect_ship_reuse_y_set.clear()
             else:
                 #do dissimilar ship things:
                 suspect_ship_reuse_x_set.clear()
+                suspect_ship_reuse_y_set.clear()
 
             print(f"\nTargeting a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
 
@@ -88,7 +93,7 @@ class AutomatedPlayer:
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
-                                    time.sleep(1) ## give user a chance to notice results
+                                    time.sleep(.5) ## give user a chance to notice 'honing in'
                                 if(row[3]>99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1])
@@ -99,7 +104,7 @@ class AutomatedPlayer:
             except Exception as e:
                 print(f"❌ Error during processing: {e}")
 
-            time.sleep(.3) #300 millis
+            time.sleep(.1) #100 millis
         ## end of condition check for attempt_counter<max_attempts
         print('\n\n\t<****> The bot has used up all 100 of its attempts, Exiting...\n')
         sys.exit(0)
