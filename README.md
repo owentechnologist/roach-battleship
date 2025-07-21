@@ -101,10 +101,35 @@ cockroach sql --insecure
 A sample query you may wish to run:
 
 ```
-select anchorpoint,battleship_class,quadrant from battleship order by quadrant asc;
+select pk, anchorpoint, battleship_class, quadrant from battleship order by quadrant asc;
+```
+## Run the populate_quadrants.py program to write a bunch of battlships into the database:
+
+```
+python3 populate_quadrants.py <number_of_ships_to_create>
 ```
 
-## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space:
+example:
+
+```
+python3 populate_quadrants.py 15
+```
+
+
+## Run the human_player.py program to try your hand at seeking battlehips
+
+
+```
+python3 human_player.py <percentage_watermark_filter> <number_of_tries>
+```
+
+example:
+
+```
+python3 human_player.py 65 10
+```
+
+## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
 
 ```
 python3 battle_bot.py <match_percentage_threshold>
@@ -195,6 +220,10 @@ At least one ship detected in quadrant:
         <****> AFTER 14 ATTEMPTS <****> 
 
                 PERFECT HIT -- EXITING PROGRAM
+
+%^%^%^%^***. KABLOOEY!!!!! 
+
+deleting row with PK == b5a81641-4af0-4119-bded-6c9e183d6548
 ```
 
 ## to view the activity in the database you can open the dbconsole in a browser:
