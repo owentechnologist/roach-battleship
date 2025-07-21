@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS vb.battleship(
    quadrant SMALLINT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 4),
    anchorpoint SMALLINT NOT NULL DEFAULT 23 CHECK (anchorpoint BETWEEN 1 AND 95),
    coordinates_embedding VECTOR(100),
-   --VECTOR INDEX (quadrant, coordinates_embedding)
-   VECTOR INDEX (quadrant, battleship_class, coordinates_embedding)
+   VECTOR INDEX (quadrant, coordinates_embedding)
+   --VECTOR INDEX (quadrant, battleship_class, coordinates_embedding)
 );
 
 -- add some initial data to establish the ships in various quadrants
