@@ -38,8 +38,8 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         #           []        <-- anchor_point + 60
         if anchorX<2:
             anchorX = 2
-        if anchorX>8:
-            anchorX = 8
+        if anchorX>9:
+            anchorX = 9
         if anchorY<1:
             anchorY = 1
         if anchorY>4:
@@ -147,31 +147,39 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
                      anchor_point+20,anchor_point+22,anchor_point+24,anchor_point+26,
                      anchor_point+30,anchor_point+31,anchor_point+34,anchor_point+35,anchor_point+36,anchor_point+37]
 
-
-    #print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
     print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
     ship_list=[]
+    ship_area_counter=0
+    ship_one_hot=[0,0,0] # [0,0,1]==sub, [0,1,1]==skiff, [0,1,0]==destroyer, [1,0,0]==aircraft_carrier
     for point in range(1,101):
         if point in ship_points:
+            ship_area_counter=ship_area_counter+.1 ## to help differentiate size of vessels
             if ship_type == 'submarine':
-                ship_list.append((point/1000)+.005) ## additive vs multiplicative tests
-                #ship_list.append(point*.002) ## submerged
+                ship_list.append((point/1300)+.01) #.001
+                #ship_list.append(.05)
+                ship_one_hot=[0,0,1]
             elif ship_type == 'skiff':
-                ship_list.append((point/1000)+.003) 
-                #ship_list.append(point*.004) 
+                ship_list.append((point/1300)+.015) #.015
+                #ship_list.append(.05)
+                ship_one_hot=[0,1,1]
             elif ship_type == 'destroyer':
-                ship_list.append((point/1000)+.001) 
-                #ship_list.append(point*.001) 
+                ship_list.append((point/1300)+.02) #.002
+                #ship_list.append(.05)
+                ship_one_hot=[0,1,0]
             elif ship_type == 'flotsam':
-                ship_list.append(random.uniform(0, 9)) ## scattered junk
+                ship_list.append(random.uniform(0, .009)) ## scattered junk
+                ship_one_hot=[0,0,0]
             else:
-                ship_list.append((point/1000)+.0015)
-                #ship_list.append(point*.0025) # ship_list.append(1.0) ## Aircraft Carrier 
+                ship_list.append((point/1300)+.025) ## .0025 aircraft_carrier
+                #ship_list.append(.05)
+                ship_one_hot=[1,0,0]
         else:
             ship_list.append(0.0)
 
     print_ship(ship_list,ship_type)
-
+    ## add one-shot encode ship_type and area of the ships to make total vector dimensions = 104
+    ship_list.append(ship_area_counter)
+    ship_list.extend(ship_one_hot)
     print('\n\n')
     print(ship_list)
     return (ship_list)

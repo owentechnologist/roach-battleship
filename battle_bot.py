@@ -26,7 +26,7 @@ class AutomatedPlayer:
         nearby_ship = False
         suspect_quadrant = 4
         suspect_ship_type = 'submarine'
-        suspect_ship_reuse_count = 0
+        suspect_ship_reuse_count = 1 ## so humans clearly see when we get to 10
         attempt_counter=0
         attempt_counter_exceeded=False
         suspect_ship_reuse_x_set= {0,}
@@ -47,10 +47,10 @@ class AutomatedPlayer:
             if(nearby_ship==True):
                 #do nearbyShip things
                 quadrant = suspect_quadrant
-                if(suspect_ship_reuse_count<10):
+                if(suspect_ship_reuse_count<11):
                     ship_type = suspect_ship_type
                 else:
-                    suspect_ship_reuse_count=0
+                    suspect_ship_reuse_count=1
                     suspect_ship_reuse_x_set.clear()
                     suspect_ship_reuse_y_set.clear()
             else:
@@ -87,14 +87,14 @@ class AutomatedPlayer:
                                 val=row[0]
                                 val = val.strip()
                                 print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%, Hidden_Anchor_Point: {row[2]}")
-                                if(row[3]>self.match_percentage_threshold) and (row[3]<99):
-                                    print(f'\n📡 Honing in on quadrant {quadrant} with suspect_ship_type {suspect_ship_type} and suspect_ship_reuse_count {suspect_ship_reuse_count}')
+                                if((row[3]>self.match_percentage_threshold) and (row[3]<99) and (val==ship_type)):
+                                    print(f'\n📡 Honing in on quadrant {quadrant} with suspect_ship_type {ship_type} and suspect_ship_reuse_count {suspect_ship_reuse_count}')
                                     suspect_quadrant = quadrant
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
                                     time.sleep(.5) ## give user a chance to notice 'honing in'
-                                if(row[3]>99):
+                                if(row[3]>98):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1])
                                     sys.exit(0)

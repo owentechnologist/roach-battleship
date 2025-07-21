@@ -20,11 +20,12 @@ class HumanPlayer:
     def run(self):
         attempt_counter=1
         while attempt_counter<=self.max_attempts:
-            quadrant=''
-            while quadrant=='':
-                if quadrant=='end':
+            usr_input=''
+            while usr_input=='':
+                usr_input=input('enter a number between 1 and 4 for the quadrant ')
+                if usr_input=='end':
                     sys.exit(0)
-                quadrant=int(input('enter a number between 1 and 4 for the quadrant '))
+                quadrant=int(usr_input)
             ship_type_num=''
             while ship_type_num=='':
                 ship_type_num=input('Enter a number corresponding to a ship type: 1 (destroyer) 2 (skiff) 3 (submarine) 4 (aircraft_carrier)  ')
@@ -38,8 +39,8 @@ class HumanPlayer:
                 ship_type='submarine'
             elif ship_type_num=='4':
                 ship_type='aircraft_carrier'
-            anchor_y=int(input('enter a number between 1 and 10 for the y coordinate '))
-            anchor_x=int(input('enter a number between 1 and 10 for the x coordinate '))
+            anchor_y=int(input('enter a number between 1 and 10 for the y (down) coordinate '))
+            anchor_x=int(input('enter a number between 1 and 10 for the x (over) coordinate '))
             print(f"\nTargeting a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_y} , {anchor_x})")
             vector = make_ship_shape_from_anchorXY(anchor_x, anchor_y, ship_type)
             vector_string = "[" + ", ".join(map(str, vector)) + "]"

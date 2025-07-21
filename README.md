@@ -126,7 +126,7 @@ python3 human_player.py <percentage_watermark_filter> <number_of_tries>
 example:
 
 ```
-python3 human_player.py 65 10
+python3 human_player.py 45 10
 ```
 
 ## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
@@ -138,7 +138,7 @@ python3 battle_bot.py <match_percentage_threshold>
 Example:
 
 ```
-python3 battle_bot.py 75
+python3 battle_bot.py 70
 ```
 
 ## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
@@ -232,7 +232,7 @@ https://localhost:8080
 ````
 
 
-#### random vector details:
+### random vector details: (look for these PGVector commands to be added to CRDB (late 2025))
 -- NB there are options in terms of the search algorithm chosen:
 
 -- L2 (Euclidean)  [default]
