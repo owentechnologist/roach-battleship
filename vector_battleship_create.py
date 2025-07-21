@@ -1,5 +1,6 @@
 import sys,random
 
+# with one hot encoding for type and additional area_measure --> vector is now 105 dimensions
 # accepts ship_type of 'submarine', 'destroyer','aircraft_carrier','skiff'
 def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
     anchorX=int(anchorX)
@@ -150,29 +151,29 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
     print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
     ship_list=[]
     ship_area_counter=0
-    ship_one_hot=[0,0,0] # [0,0,1]==sub, [0,1,1]==skiff, [0,1,0]==destroyer, [1,0,0]==aircraft_carrier
+    ship_one_hot=[0,0,0,0] # [0,0,0,1]==sub, [0,0,1,0]==skiff, [0,1,0,0]==destroyer, [1,0,0,0]==aircraft_carrier
     for point in range(1,101):
         if point in ship_points:
             ship_area_counter=ship_area_counter+.1 ## to help differentiate size of vessels
             if ship_type == 'submarine':
                 ship_list.append((point/1300)+.01) #.001
                 #ship_list.append(.05)
-                ship_one_hot=[0,0,1]
+                ship_one_hot=[0,0,0,1]
             elif ship_type == 'skiff':
                 ship_list.append((point/1300)+.015) #.015
                 #ship_list.append(.05)
-                ship_one_hot=[0,1,1]
+                ship_one_hot=[0,0,1,0]
             elif ship_type == 'destroyer':
                 ship_list.append((point/1300)+.02) #.002
                 #ship_list.append(.05)
-                ship_one_hot=[0,1,0]
+                ship_one_hot=[0,1,0,0]
             elif ship_type == 'flotsam':
                 ship_list.append(random.uniform(0, .009)) ## scattered junk
-                ship_one_hot=[0,0,0]
+                ship_one_hot=[0,0,0,0]
             else:
-                ship_list.append((point/1300)+.025) ## .0025 aircraft_carrier
+                ship_list.append((point/1300)+.005) ## .0025 aircraft_carrier
                 #ship_list.append(.05)
-                ship_one_hot=[1,0,0]
+                ship_one_hot=[1,0,0,0]
         else:
             ship_list.append(0.0)
 
