@@ -87,7 +87,7 @@ class HumanPlayer:
     def explain_game_play(self):
         explain_string = """Welcome to battleship!
         Battleships live in 1 of 4 quadrants
-        Battleships have anchor points defined as as an X,Y coordinate
+        Battleships have anchor points defined as an X,Y coordinate
         X values can be between 1 and 10
         Y values can be between 1 and 10
 
