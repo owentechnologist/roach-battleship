@@ -13,11 +13,12 @@ This class provides the behavior of an automated player who:
 '''
 
 class AutomatedPlayer:
-    def __init__(self, db_config, match_percentage_threshold):
+    def __init__(self, db_config, match_percentage_threshold,sleep_when_honing_millis):
         self.db_config = db_config
         self.ship_types = ['submarine', 'destroyer', 'aircraft_carrier', 'skiff']
         self.quadrants = [1, 2, 3, 4]
         self.match_percentage_threshold = match_percentage_threshold
+        self.sleep_when_honing_millis=int(sleep_when_honing_millis) * .001
 
     def get_connection(self):
         return psycopg.connect(**self.db_config)
@@ -93,7 +94,7 @@ class AutomatedPlayer:
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
-                                    time.sleep(.5) ## give user a chance to notice 'honing in'
+                                    time.sleep(self.sleep_when_honing_millis) ## give user a chance to notice 'honing in'
                                 if(row[3]>98):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1])
@@ -104,7 +105,7 @@ class AutomatedPlayer:
             except Exception as e:
                 print(f"❌ Error during processing: {e}")
 
-            time.sleep(.1) #100 millis
+            #time.sleep(.1) #100 millis not necessary as we enjoy watching the bot work!
         ## end of condition check for attempt_counter<max_attempts
         print('\n\n\t<****> The bot has used up all 100 of its attempts, Exiting...\n')
         sys.exit(0)
@@ -128,6 +129,9 @@ if __name__ == "__main__":
         'dbname': 'vb',
         'user': 'root'
     }
-
-    player = AutomatedPlayer(db_config,float(sys.argv[1]))
+    honing_sleep_time=200 #millis
+    if(len(sys.argv)>2):
+        honing_sleep_time=sys.argv[2]
+    player = AutomatedPlayer(db_config,float(sys.argv[1]),honing_sleep_time)
+    
     player.run()

@@ -132,13 +132,19 @@ python3 human_player.py 45 10
 ## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
 
 ```
-python3 battle_bot.py <match_percentage_threshold>
+python3 battle_bot.py <match_percentage_threshold> <optional_sleep_when_honing_millis>
 ```
 
-Example:
+Example uses default of 200 millis sleep when ship detected:
 
 ```
 python3 battle_bot.py 70
+```
+
+Example user-specified sleep time of 10 millis when ship detected:
+
+```
+python3 battle_bot.py 70 10
 ```
 
 ## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
