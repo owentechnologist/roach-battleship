@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS vb.battleship(
    quadrant SMALLINT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 4),
    anchorpoint SMALLINT NOT NULL DEFAULT 23 CHECK (anchorpoint BETWEEN 1 AND 95),
    coordinates_embedding VECTOR(105),
-   VECTOR INDEX (quadrant, coordinates_embedding)
+   VECTOR INDEX (quadrant, coordinates_embedding vector_l2_ops) -- default is L2 for KNN, explicit use just for clarity
    --VECTOR INDEX (quadrant, battleship_class, coordinates_embedding)
 );
 

@@ -238,14 +238,29 @@ https://localhost:8080
 ````
 
 
-### random vector details: (look for these PGVector commands to be added to CRDB (late 2025))
+### CRDB vector details:  PGVector commands and augmentations continuing in 2025
+https://www.cockroachlabs.com/docs/v25.2/vector-indexes.html
+
+When creating the index for searching vectors, specify the intended comparison strategy 
+(see crdb_setup.sql)
+
+vector_cosine_ops, vector_l2_ops, or vector_ip_ops (for inner product)
+
 -- NB there are options in terms of the search algorithm chosen:
 
--- L2 (Euclidean)  [default]
+### Available as of June 2025:
+
+ -- L2 (Euclidean)  [default]
 SELECT ... ORDER BY vector <-> '[query_vector]' LIMIT 5
+
+### Expected September 2025: (for now, use function: cosine_distance() )
+Measures the angle between two vectors, normalized for magnitude. Purely direction-based; magnitude has no effect.
 
 -- Cosine
 SELECT ... ORDER BY vector <=> '[query_vector]' LIMIT 5
+
+### Expected September 2025: (for now, use function: inner_product(v1, v2) )
+Sensitive to both the direction and the magnitude (length) of vectors.
 
 -- Inner Product
 SELECT ... ORDER BY vector <#> '[query_vector]' LIMIT 5
