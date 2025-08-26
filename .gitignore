@@ -1,4 +1,5 @@
 demo.md
+cockroach-data
 rbenv/**
 .env
 __pycache__/

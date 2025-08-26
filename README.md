@@ -248,18 +248,18 @@ vector_cosine_ops, vector_l2_ops, or vector_ip_ops (for inner product)
 
 -- NB there are options in terms of the search algorithm chosen:
 
-### Available as of June 2025:
+### Available with CRDB version 25.2 2025: 
 
  -- L2 (Euclidean)  [default]
 SELECT ... ORDER BY vector <-> '[query_vector]' LIMIT 5
 
-### Expected September 2025: (for now, use function: cosine_distance() )
+### Available with CRDB version 25.3 2025: 
 Measures the angle between two vectors, normalized for magnitude. Purely direction-based; magnitude has no effect.
 
 -- Cosine
 SELECT ... ORDER BY vector <=> '[query_vector]' LIMIT 5
 
-### Expected September 2025: (for now, use function: inner_product(v1, v2) )
+### Available with CRDB version 25.3 2025: 
 Sensitive to both the direction and the magnitude (length) of vectors.
 
 -- Inner Product
