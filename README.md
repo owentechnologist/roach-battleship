@@ -1,7 +1,9 @@
 ![vector battleship](./battleship.png)
 
 # roach-battleship
-This repo is a reworking and expansion on the otVectorBattleship repo.  This version uses CockroachDB as the vectorDB
+This repo is a demo of using Euclidean distance with Vector Search to identify similar objects within a shared vector space.  This version uses CockroachDB as the vectorDB. The goal is to provide a bit of fun and clarify how vectors can be constructed to enable utility when seeking to determine object similarity.  (it is, of course possible to adjust the query criteria to isolate anomalies - something you might do for fraud detection or when you seek outliers).  
+
+It could be an interesting challenge for the curious to enhance the battle_bot logic to make it smarter.  Have fun!
 
 
 ## Python-preparation Steps for running the program on your machine:
