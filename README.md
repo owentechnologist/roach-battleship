@@ -103,7 +103,7 @@ A sample query you may wish to run:
 ```
 select pk, anchorpoint, battleship_class, quadrant from battleship order by quadrant asc;
 ```
-## Run the populate_quadrants.py program to write a bunch of battlships into the database:
+## Run the populate_quadrants.py program to write a bunch of battleships into the database:
 
 ```
 python3 populate_quadrants.py <number_of_ships_to_create>
@@ -116,7 +116,7 @@ python3 populate_quadrants.py 15
 ```
 
 
-## Run the human_player.py program to try your hand at seeking battlehips
+## Run the human_player.py program to try your hand at seeking battleships
 
 
 ```
