@@ -1,6 +1,7 @@
 import time,sys
 import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY  
+from populate_quadrants import Populator
 
 # invoke this program like this:
 # python human_player.py <match_percentage_threshold> <max_attempts>
@@ -18,6 +19,7 @@ class HumanPlayer:
         return psycopg.connect(**self.db_config)
 
     def run(self):
+        print('\n ******* BEGINNING PLAYER TARGETING ATTEMPTS ********\n')
         attempt_counter=1
         while attempt_counter<=self.max_attempts:
             usr_input=''
@@ -74,7 +76,7 @@ class HumanPlayer:
                                     self.blast_ship_out_of_existence(row[1]) # passing the pk to the function for deletion
                                     sys.exit(0)
                         else:
-                            print("No simlar and/or nearby ships detected in quadrant.")
+                            print("No similar and/or nearby ships detected in quadrant.")
                         attempt_counter=attempt_counter+1
             except Exception as e:
                 print(f"❌ Error during processing: {e}")
@@ -114,6 +116,46 @@ class HumanPlayer:
         except Exception as e:
             print(f"❌ Error during deletion of ship with PK of {pk}: \n{e}")
 
+
+    # loops so that a user can add arbitrary number of ships:
+    def ask_place_another(self):
+        decision='y'
+        while(decision=='y' or decision=='Y'):
+            decision = input('Do you wish to add a ship to the database? (y / n)  ')
+            if decision=='end':
+                sys.exit(0)
+            if (decision=='y' or decision=='Y'):
+                self.place_new_ship()
+
+
+    # inserts a new row into the database that represents a ship at a location in a quadrant
+    def place_new_ship(self):
+        usr_input=''
+        while usr_input=='':
+            usr_input=input('enter a number between 1 and 4 for the quadrant ')
+            if usr_input=='end':
+                sys.exit(0)
+            quadrant=int(usr_input)
+        ship_type_num=''
+        while ship_type_num=='':
+            ship_type_num=input('Enter a number corresponding to a ship type: 1 (destroyer) 2 (skiff) 3 (submarine) 4 (aircraft_carrier)  ')
+            if ship_type_num=='end':
+                sys.exit(0)
+        if ship_type_num=='1':
+            ship_type='destroyer'
+        elif ship_type_num=='2':
+            ship_type='skiff'
+        elif ship_type_num=='3':
+            ship_type='submarine'
+        elif ship_type_num=='4':
+            ship_type='aircraft_carrier'
+        anchor_y=int(input('enter a number between 1 and 10 for the y (down) coordinate '))
+        anchor_x=int(input('enter a number between 1 and 10 for the x (over) coordinate '))
+
+        pop = Populator(db_config,1)
+        pop.insert_vectorized_object(ship_type,quadrant,anchor_x,anchor_y)
+            
+
 # --- Likely entry point for the python interpretor ---
 if __name__ == "__main__":
     db_config = {
@@ -125,4 +167,5 @@ if __name__ == "__main__":
 
     player = HumanPlayer(db_config,float(sys.argv[1]),int(sys.argv[2]))
     player.explain_game_play()
+    player.ask_place_another()
     player.run()

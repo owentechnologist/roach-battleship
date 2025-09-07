@@ -11,6 +11,27 @@ class Populator:
 
     def get_connection(self):
         return psycopg.connect(**self.db_config)
+    
+    # this function allows for the insertion of new ships into the vectorDB
+    # the caller supplies the ship_type, quadrant, and anchor points
+    def insert_vectorized_object(self,ship_type,quadrant,anchor_x,anchor_y):
+        print(f"\nAttempting to place a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
+
+        vector = make_ship_shape_from_anchorXY(anchor_x, anchor_y, ship_type)
+        vector_string = "[" + ", ".join(map(str, vector)) + "]"
+
+        query = f"""
+        INSERT into battleship (battleship_class,quadrant,anchorpoint,coordinates_embedding)
+        VALUES (%s,%s,%s,%s);
+        """
+        coordinates_embedding =  f'{vector_string}'
+        args = (ship_type, quadrant, anchor_x+((anchor_y*10)-10),coordinates_embedding) 
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(query,args)
+        except Exception as e:
+            print(f"❌ Error during INSERTION of {ship_type} in quadrant {quadrant}: {e}")
 
     def run(self):
         current_quadrant = random.randint(1,4)
@@ -39,24 +60,8 @@ class Populator:
             if ship_type=='submarine':
                 anchor_x = random.randint(1,10)
                 anchor_y = random.randint(1,5)
+        self.insert_vectorized_object(ship_type,quadrant,anchor_x,anchor_y)
 
-            print(f"\nAttempting to place a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
-
-            vector = make_ship_shape_from_anchorXY(anchor_x, anchor_y, ship_type)
-            vector_string = "[" + ", ".join(map(str, vector)) + "]"
-
-            query = f"""
-            INSERT into battleship (battleship_class,quadrant,anchorpoint,coordinates_embedding)
-            VALUES (%s,%s,%s,%s);
-            """
-            coordinates_embedding =  f'{vector_string}'
-            args = (ship_type, quadrant, anchor_x+((anchor_y*10)-10),coordinates_embedding) 
-            try:
-                with self.get_connection() as conn:
-                    with conn.cursor() as cur:
-                        cur.execute(query,args)
-            except Exception as e:
-                print(f"❌ Error during INSERTION of {ship_type} in quadrant {quadrant}: {e}")
 
 # --- Example usage ---
 if __name__ == "__main__":

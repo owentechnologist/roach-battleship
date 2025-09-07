@@ -100,7 +100,7 @@ class AutomatedPlayer:
                                     self.blast_ship_out_of_existence(row[1])
                                     sys.exit(0)
                         else:
-                            print("No simlar and/or nearby ships detected in quadrant.")
+                            print("No similar and/or nearby ships detected in quadrant.")
                             nearby_ship = False
             except Exception as e:
                 print(f"❌ Error during processing: {e}")
