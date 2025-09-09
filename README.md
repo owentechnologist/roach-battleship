@@ -9,7 +9,7 @@ It could be an interesting challenge for the curious to enhance the battle_bot l
 ```
 export BATTLESHIP_TABLE=battle_v11
 ```
- ## when battle_11 is selected, an 11 dimension vector is used to represent the ships
+ ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships
 
 ## Python-preparation Steps for running the program on your machine:
 
