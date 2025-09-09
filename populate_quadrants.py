@@ -1,4 +1,4 @@
-import random,sys
+import random,sys,os
 import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY
 
@@ -8,6 +8,7 @@ class Populator:
         self.ship_types = ['submarine', 'destroyer', 'aircraft_carrier', 'skiff', 'flotsam']
         self.quadrants = [1, 2, 3, 4]
         self.number_of_objects = number_of_objects
+        self.battleship_table = os.getenv("BATTLESHIP_TABLE", "battleship")
 
     def get_connection(self):
         return psycopg.connect(**self.db_config)
@@ -21,7 +22,7 @@ class Populator:
         vector_string = "[" + ", ".join(map(str, vector)) + "]"
 
         query = f"""
-        INSERT into battleship (battleship_class,quadrant,anchorpoint,coordinates_embedding)
+        INSERT into {self.battleship_table} (battleship_class,quadrant,anchorpoint,coordinates_embedding)
         VALUES (%s,%s,%s,%s);
         """
         coordinates_embedding =  f'{vector_string}'
@@ -34,6 +35,7 @@ class Populator:
             print(f"❌ Error during INSERTION of {ship_type} in quadrant {quadrant}: {e}")
 
     def run(self):
+        print(f'^^^^ POPULATING DB TABLE {self.battleship_table} WITH {self.number_of_objects} OBJECTS  ^^^^^')
         current_quadrant = random.randint(1,4)
         ship_type = random.choice(self.ship_types)
         pop_counter=1
@@ -60,7 +62,7 @@ class Populator:
             if ship_type=='submarine':
                 anchor_x = random.randint(1,10)
                 anchor_y = random.randint(1,5)
-        self.insert_vectorized_object(ship_type,quadrant,anchor_x,anchor_y)
+            self.insert_vectorized_object(ship_type,quadrant,anchor_x,anchor_y)
 
 
 # --- Example usage ---

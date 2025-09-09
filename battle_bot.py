@@ -1,5 +1,5 @@
 import random
-import time,sys
+import time,sys,os
 import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY  
 ''' 
@@ -19,6 +19,7 @@ class AutomatedPlayer:
         self.quadrants = [1, 2, 3, 4]
         self.match_percentage_threshold = match_percentage_threshold
         self.sleep_when_honing_millis=int(sleep_when_honing_millis) * .001
+        self.battleship_table = os.getenv("BATTLESHIP_TABLE", "battleship")
 
     def get_connection(self):
         return psycopg.connect(**self.db_config)
@@ -70,7 +71,7 @@ class AutomatedPlayer:
             )
             SELECT battleship_class, pk, anchorpoint,
                 ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) AS "Percent Match"
-            FROM battleship, target_vector 
+            FROM {self.battleship_table}, target_vector 
             WHERE quadrant = {quadrant}
               AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= {self.match_percentage_threshold}
             ORDER BY "Percent Match" DESC
@@ -88,14 +89,14 @@ class AutomatedPlayer:
                                 val=row[0]
                                 val = val.strip()
                                 print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%, Hidden_Anchor_Point: {row[2]}")
-                                if((row[3]>self.match_percentage_threshold) and (row[3]<99) and (val==ship_type)):
+                                if((row[3]>self.match_percentage_threshold) and (row[3]<99.99) and (val==ship_type)):
                                     print(f'\n📡 Honing in on quadrant {quadrant} with suspect_ship_type {ship_type} and suspect_ship_reuse_count {suspect_ship_reuse_count}')
                                     suspect_quadrant = quadrant
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
                                     time.sleep(self.sleep_when_honing_millis) ## give user a chance to notice 'honing in'
-                                if(row[3]>98):
+                                if(row[3]>99.99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1])
                                     sys.exit(0)
@@ -112,7 +113,7 @@ class AutomatedPlayer:
 
     def blast_ship_out_of_existence(self,pk):
         print(f'\n\n%^%^%^%^***. KABLOOEY!!!!! \n\ndeleting row with PK == {pk}')
-        query = f"DELETE FROM battleship WHERE PK=%s::UUID;"
+        query = f"DELETE FROM {self.battleship_table} WHERE PK=%s::UUID;"
         args=(pk,)
         try:
             with self.get_connection() as conn:

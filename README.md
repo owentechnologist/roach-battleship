@@ -5,6 +5,11 @@ This repo is a demo of using Euclidean distance with Vector Search to identify s
 
 It could be an interesting challenge for the curious to enhance the battle_bot logic to make it smarter.  Have fun!
 
+## The default vectorization uses 105 elements/dimensions to try a more efficient strategy you can specify 
+```
+export BATTLESHIP_TABLE=battle_v11
+```
+ ## when battle_11 is selected, an 11 dimension vector is used to represent the ships
 
 ## Python-preparation Steps for running the program on your machine:
 

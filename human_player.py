@@ -1,4 +1,4 @@
-import time,sys
+import os,sys
 import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY  
 from populate_quadrants import Populator
@@ -14,6 +14,7 @@ class HumanPlayer:
         self.quadrants = [1, 2, 3, 4]
         self.match_percentage_threshold = match_percentage_threshold
         self.max_attempts=max_attempts
+        self.battleship_table = os.getenv("BATTLESHIP_TABLE", "battleship")
 
     def get_connection(self):
         return psycopg.connect(**self.db_config)
@@ -52,7 +53,7 @@ class HumanPlayer:
                 )
                 SELECT battleship_class, pk, anchorpoint,
                     ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) AS "Percent Match"
-                FROM battleship, target_vector 
+                FROM {self.battleship_table}, target_vector 
                 WHERE quadrant = {quadrant}
                 AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= {self.match_percentage_threshold}
                 ORDER BY "Percent Match" DESC
@@ -71,7 +72,7 @@ class HumanPlayer:
                                 val = val.strip()
                                 print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%")
                                     
-                                if(row[3]>99):
+                                if(row[3]>99.99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1]) # passing the pk to the function for deletion
                                     sys.exit(0)
@@ -107,7 +108,7 @@ class HumanPlayer:
 
     def blast_ship_out_of_existence(self,pk):
         print(f'\n\n%^%^%^%^***. KABLOOEY!!!!! \n\ndeleting row with PK == {pk}')
-        query = f"DELETE FROM battleship WHERE PK=%s::UUID;"
+        query = f"DELETE FROM {self.battleship_table} WHERE PK=%s::UUID;"
         args=(pk,)
         try:
             with self.get_connection() as conn:

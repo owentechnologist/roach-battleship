@@ -25,6 +25,22 @@ CREATE TABLE IF NOT EXISTS vb.battleship(
    --VECTOR INDEX (quadrant, battleship_class, coordinates_embedding)
 );
 
+-- create an alternate table for export BATTLESHIP_TABLE=battle_v11
+-- (used only if the os environment variable BATTLESHIP_TABLE is set to battle_v11)
+-- create an alternate battleship table:  note the use of the smaller vector embedding for similarity
+-- the Vector index has a prefix (quadrant) to limit the scope of the Vector search work
+CREATE TABLE IF NOT EXISTS vb.battle_v11(
+   pk UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   battleship_class CHAR(20) NOT NULL DEFAULT 'destroyer' CHECK (battleship_class in ('aircraft_carrier', 'skiff','destroyer','submarine','flotsam')),
+   quadrant SMALLINT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 4),
+   anchorpoint SMALLINT NOT NULL DEFAULT 23 CHECK (anchorpoint BETWEEN 1 AND 95),
+   coordinates_embedding VECTOR(11),
+   VECTOR INDEX (quadrant, coordinates_embedding vector_l2_ops) -- default is L2 for KNN, explicit use just for clarity
+   --VECTOR INDEX (quadrant, battleship_class, coordinates_embedding)
+);
+
+
+
 -- add some initial data to establish the ships in various quadrants
 INSERT into battleship (battleship_class,quadrant,anchorpoint) values ('submarine',1,53);
 INSERT into battleship (battleship_class,quadrant,anchorpoint) values ('submarine',1,37);

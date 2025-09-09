@@ -1,11 +1,109 @@
-import sys,random
+import sys,random,os
+
+# (experimental) denser vector with fewer elements:
+# the idea is to produce a single value for each row in a quadrant grid
+# if the type of ship determines the default value per row, there is no need for 
+# additional elements for one hot encoding at the end of the vector
+# the points are measured left to right so they align with the stored anchor points
+# 56 is the 5th row, sixth column
+# the goal of this vector is to allow effective clustering of similar ships
+# based on their type and location
+# not to reveal or encapsulate their location precisely
+# This will only work if the anchor point is included in the captured data
+# the interesting challenge is to encapsulate the value of the anchor point 
+# rather than simply repeat it as the type of ship needs to be part of the data
+# the goal of the embedding logic is to provide subtle guidance to a player 
+# akin to ' you are getting warmer ' if the distance between a 
+# ship at located at 5,6 and a ship located at 5,5 is too great 
+# or the distance between a ship located at 2,1 and 8,6 is too small
+# it will discourage fine-grained adjustments to the targeting from a player
+# note that to print the ship to screen we populate a ship_list purely for display
+def assign_11_elements(ship_type,ship_points):
+    ship_list=[]
+    ship_derived_placement_val=0
+    row_values=[0,0,0,0,0,0,0,0,0,0]
+    for point in range(1,101):
+        if point in ship_points:
+            ship_list.append(1.0) # for display
+            ship_derived_placement_val+=point
+            if ship_type == 'submarine':
+                row_values[round((point/10)-1)]+=(.001)  
+            elif ship_type == 'skiff':
+                row_values[round((point/10)-1)]+=(.15) 
+            elif ship_type == 'destroyer':
+                row_values[round((point/10)-1)]+=(.1) 
+            elif ship_type == 'flotsam':
+                row_values[round((point/10)-1)]+=(random.uniform(0, .009)) 
+                ship_derived_placement_val+=(.15) # to skew vector away from ships
+            else: # aircraft_carrier:
+                row_values[round((point/10)-1)]+=(.5)
+        else:
+            ship_list.append(0.0)
+    row_values.append(ship_derived_placement_val*.001)
+    print_ship(ship_list,ship_type)
+    print('\n\n')
+    print(row_values)
+    return (row_values)
+
+
+# default, relatively sparse implementation
+# the list of elements is directly assigned by the ship-occupied spaces on 
+# the grid of a 10x10 quadrant
+# this creates large deltas between small skiffs that only occupy 4 spaces of a grid 
+# and aircraft carriers that occupy 30 spaces
+def assign_105_elements(ship_type,ship_points):
+    ship_list=[]
+    ship_area_counter=0
+    ship_one_hot=[0,0,0,0] # [0,0,0,1]==sub, [0,0,1,0]==skiff, [0,1,0,0]==destroyer, [1,0,0,0]==aircraft_carrier
+    for point in range(1,101):
+        if point in ship_points:
+            ship_area_counter=ship_area_counter+.1 ## to help differentiate size of vessels
+            if ship_type == 'submarine':
+                ship_list.append((point/1300)+.01) 
+                ship_one_hot=[0,0,0,1]
+            elif ship_type == 'skiff':
+                ship_list.append((point/1300)+.015) 
+                ship_one_hot=[0,0,1,0]
+            elif ship_type == 'destroyer':
+                ship_list.append((point/1300)+.02) 
+                ship_one_hot=[0,1,0,0]
+            elif ship_type == 'flotsam':
+                ship_list.append(random.uniform(0, .009)) ## scattered junk
+                ship_one_hot=[0,0,0,0]
+            else:
+                ship_list.append((point/1300)+.005) ## aircraft_carrier
+                ship_one_hot=[1,0,0,0]
+        else:
+            ship_list.append(0.0)
+
+    print_ship(ship_list,ship_type)
+    ## add one-shot encode ship_type and area of the ships to make total vector dimensions = 105
+    ship_list.append(ship_area_counter)
+    ship_list.extend(ship_one_hot)
+    print('\n\n')
+    print(ship_list)
+    return (ship_list)
+
+# breaking this portion out to isolate the assignment of the elements of the vector
+# this encourages the consideration of non-sparse and alternative length 
+# implementations
+# number_of_dimensions will determine which creation strategy is used 
+def create_vector_as_list(ship_type,ship_points,number_of_dimensions):
+    vector_elements=[]
+    if(number_of_dimensions==105):
+        vector_elements=assign_105_elements(ship_type,ship_points)
+    elif(number_of_dimensions==11):
+        vector_elements=assign_11_elements(ship_type,ship_points)
+    return vector_elements
 
 # with one hot encoding for type and additional area_measure --> vector is now 105 dimensions
 # accepts ship_type of 'submarine', 'destroyer','aircraft_carrier','skiff'
 def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
+    number_of_dimensions=105
+    if(os.getenv("BATTLESHIP_TABLE", "battleship")=='battle_v11'):
+        number_of_dimensions=11
     anchorX=int(anchorX)
     anchorY=int(anchorY)
-    #print(f'ORIGINAL anchorX = {anchorX}  anchorY = {anchorY}')
     # make sure ship fits in our small grid 10x10:
 
     # NB: The position of X=0, Y=0 is the top left corner (not the bottom left)
@@ -149,42 +247,11 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
                      anchor_point+30,anchor_point+31,anchor_point+34,anchor_point+35,anchor_point+36,anchor_point+37]
 
     print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
-    ship_list=[]
-    ship_area_counter=0
-    ship_one_hot=[0,0,0,0] # [0,0,0,1]==sub, [0,0,1,0]==skiff, [0,1,0,0]==destroyer, [1,0,0,0]==aircraft_carrier
-    for point in range(1,101):
-        if point in ship_points:
-            ship_area_counter=ship_area_counter+.1 ## to help differentiate size of vessels
-            if ship_type == 'submarine':
-                ship_list.append((point/1300)+.01) #.001
-                #ship_list.append(.05)
-                ship_one_hot=[0,0,0,1]
-            elif ship_type == 'skiff':
-                ship_list.append((point/1300)+.015) #.015
-                #ship_list.append(.05)
-                ship_one_hot=[0,0,1,0]
-            elif ship_type == 'destroyer':
-                ship_list.append((point/1300)+.02) #.002
-                #ship_list.append(.05)
-                ship_one_hot=[0,1,0,0]
-            elif ship_type == 'flotsam':
-                ship_list.append(random.uniform(0, .009)) ## scattered junk
-                ship_one_hot=[0,0,0,0]
-            else:
-                ship_list.append((point/1300)+.005) ## .0025 aircraft_carrier
-                #ship_list.append(.05)
-                ship_one_hot=[1,0,0,0]
-        else:
-            ship_list.append(0.0)
 
-    print_ship(ship_list,ship_type)
-    ## add one-shot encode ship_type and area of the ships to make total vector dimensions = 104
-    ship_list.append(ship_area_counter)
-    ship_list.extend(ship_one_hot)
-    print('\n\n')
-    print(ship_list)
-    return (ship_list)
+    return create_vector_as_list(ship_type=ship_type,ship_points=ship_points,number_of_dimensions=number_of_dimensions)
 
+
+# used to display the ship in question on the command line for a human viewing
 def print_ship(ship_list,ship_type):
     for y in range(0,10):
         print("|",end="")
