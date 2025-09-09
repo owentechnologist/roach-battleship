@@ -5,12 +5,17 @@ This repo is a demo of using Euclidean distance with Vector Search to identify s
 
 It could be an interesting challenge for the curious to enhance the battle_bot logic to make it smarter.  Have fun!
 
-## The default vectorization uses 105 elements/dimensions to try a more efficient strategy you can specify 
+## The default vectorization uses 105 elements/dimensions, there is an optional second table and strategy for the vector embeddings that reduces their size from 105 to 11 dimensions.  This embedding model is very different in its behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  To enable this alternate behavior set the following env variable:
+
 ```
 export BATTLESHIP_TABLE=battle_v11
 ```
- ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships
 
+ ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships.  To set the default table and strategy back to 105 dimensions use:
+
+```
+export BATTLESHIP_TABLE=battleship
+```
 ## Python-preparation Steps for running the program on your machine:
 
 
