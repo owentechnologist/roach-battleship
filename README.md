@@ -13,7 +13,7 @@ export BATTLESHIP_TABLE=battle_v11
 
  ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships.  
  
-## another option is to set the table to use a 21 dimension vector:
+## another option is to set the table to use a 21 dimension vector: (this one is the 'Goldilocks' option)
 
 ```
 export BATTLESHIP_TABLE=battle_v21
