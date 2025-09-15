@@ -11,7 +11,15 @@ It could be an interesting challenge for the curious to enhance the battle_bot l
 export BATTLESHIP_TABLE=battle_v11
 ```
 
- ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships.  To set the default table and strategy back to 105 dimensions use:
+ ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships.  
+ 
+## another option is to set the table to use a 21 dimension vector:
+
+```
+export BATTLESHIP_TABLE=battle_v21
+```
+
+ ## To set the default table and strategy back to 105 dimensions use:
 
 ```
 export BATTLESHIP_TABLE=battleship
