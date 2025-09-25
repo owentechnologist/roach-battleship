@@ -89,14 +89,14 @@ class AutomatedPlayer:
                                 val=row[0]
                                 val = val.strip()
                                 print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%, Hidden_Anchor_Point: {row[2]}")
-                                if((row[3]>self.match_percentage_threshold) and (row[3]<99.99) and (val==ship_type)):
+                                if((row[3]>self.match_percentage_threshold) and (row[3]<100.00) and (val==ship_type)):
                                     print(f'\n📡 Honing in on quadrant {quadrant} with suspect_ship_type {ship_type} and suspect_ship_reuse_count {suspect_ship_reuse_count}')
                                     suspect_quadrant = quadrant
                                     suspect_ship_type = ship_type
                                     suspect_ship_reuse_count=suspect_ship_reuse_count+1
                                     nearby_ship = True
                                     time.sleep(self.sleep_when_honing_millis) ## give user a chance to notice 'honing in'
-                                if(row[3]>99.99):
+                                if(row[3]==100.00):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1])
                                     sys.exit(0)
