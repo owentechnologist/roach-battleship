@@ -133,9 +133,9 @@ def assign_105_elements(ship_type,ship_points):
 # number_of_dimensions will determine which creation strategy is used 
 def create_vector_as_list(ship_type,ship_points):
     number_of_dimensions=105
-    if(os.getenv("BATTLESHIP_TABLE", "battleship")=='battle_v11'):
+    if(os.getenv("BATTLESHIP_TABLE", "battleship")=='vb.battle_v11'):
         number_of_dimensions=11
-    elif(os.getenv("BATTLESHIP_TABLE", "battleship")=='battle_v21'):
+    elif(os.getenv("BATTLESHIP_TABLE", "battleship")=='vb.battle_v21'):
         number_of_dimensions=21
     vector_elements=[]
     if(number_of_dimensions==105):

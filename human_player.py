@@ -14,10 +14,13 @@ class HumanPlayer:
         self.quadrants = [1, 2, 3, 4]
         self.match_percentage_threshold = match_percentage_threshold
         self.max_attempts=max_attempts
-        self.battleship_table = os.getenv("BATTLESHIP_TABLE", "battleship")
+        self.battleship_table = os.getenv("BATTLESHIP_TABLE", "vb.battleship")
 
     def get_connection(self):
-        return psycopg.connect(**self.db_config)
+        connection = psycopg.connect(**self.db_config)
+        # use unpacking operator ** to turn dict to separate args:
+        assert connection is not None, "get_connection() returned None (connection failed)"
+        return connection
 
     def run(self):
         print('\n ******* BEGINNING PLAYER TARGETING ATTEMPTS ********\n')
@@ -165,6 +168,27 @@ if __name__ == "__main__":
         'dbname': 'vb',
         'user': 'root'
     }
+
+    # to utilize certs set the env variable SECURE_CRDB=true
+    # export SECURE_CRDB=true
+    CERTDIR = '/Users/owentaylor/.cockroach-certs'
+    db_config_secure = {
+        'host': 'localhost',
+        'port': 26257,
+        'dbname': 'vdb',
+        'user': 'root',
+        # SSL parameters:
+        'sslmode': 'verify-full',         # or 'verify-full' if your host matches the cert SAN
+        'sslrootcert': f'{CERTDIR}/ca.crt',
+        'sslcert': f'{CERTDIR}/client.root.crt',
+        'sslkey': f'{CERTDIR}/client.root.key',
+        'connect_timeout': 10,
+    }
+    if(os.getenv("SECURE_CRDB", "false")=='true'):
+        print('USING SECURE CONNECTIONS...')
+        db_config=db_config_secure
+    else:
+        print('USING NON-SECURE (PLAIN) CONNECTIONS...')
 
     player = HumanPlayer(db_config,float(sys.argv[1]),int(sys.argv[2]))
     player.explain_game_play()

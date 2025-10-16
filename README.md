@@ -8,7 +8,7 @@ It could be an interesting challenge for the curious to enhance the battle_bot l
 ## The default vectorization uses 105 elements/dimensions, there is an optional second table and strategy for the vector embeddings that reduces their size from 105 to 11 dimensions.  This embedding model is very different in its behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  To enable this alternate behavior set the following env variable:
 
 ```
-export BATTLESHIP_TABLE=battle_v11
+export BATTLESHIP_TABLE=vb.battle_v11
 ```
 
  ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships.  
@@ -16,13 +16,13 @@ export BATTLESHIP_TABLE=battle_v11
 ## another option is to set the table to use a 21 dimension vector: (this one is the 'Goldilocks' option)
 
 ```
-export BATTLESHIP_TABLE=battle_v21
+export BATTLESHIP_TABLE=vb.battle_v21
 ```
 
  ## To set the default table and strategy back to 105 dimensions use:
 
 ```
-export BATTLESHIP_TABLE=battleship
+export BATTLESHIP_TABLE=vb.battleship
 ```
 ## Python-preparation Steps for running the program on your machine:
 
