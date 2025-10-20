@@ -118,6 +118,19 @@ If you wish to execute other sql -- The following command connects using the pro
 cockroach sql --insecure
 ```
 
+
+If you wish to run in secure mode - check the CockroachLabs documentation to learn how to start the database in secure mode.  To run the battleship programs against a secure cockroachdb make sure you edit the sections of code that specify the location of the CERTDIR and in your working shell export SECURE_CRDB=true
+
+```
+export SECURE_CRDB=true
+```
+
+## if running the sql client that comes with CRDB in secure mode you would need to be certain to have the necessary certificates stored in a reachable folder and include them in your startup command for the client like this:
+
+```
+cockroach sql --certs-dir=/Users/owentaylor/.cockroach-certs --host=localhost --port=26257
+```
+
 A sample query you may wish to run:
 
 ```
