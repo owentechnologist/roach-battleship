@@ -48,6 +48,7 @@ def assign_11_elements(ship_type,ship_points):
 
 # this strategy aggregates the count of populated elements by column and row
 # it tops off the elements with ship_derived_placement_val which is a measure of total area
+# this is a strategy known as line-sum-encoding and proves effective for this use case
 # note that to print the ship to screen we populate a ship_list purely for display
 def assign_21_elements(ship_type,ship_points):
     ship_list=[]
