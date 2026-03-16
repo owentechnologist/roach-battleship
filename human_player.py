@@ -73,6 +73,7 @@ class HumanPlayer:
                                 if(row[3]>99.99):
                                     print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
                                     self.blast_ship_out_of_existence(row[1]) # passing the pk to the function for deletion
+                                    close_pool()
                                     sys.exit(0)
                         else:
                             print("No similar and/or nearby ships detected in quadrant.")
