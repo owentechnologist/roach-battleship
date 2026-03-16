@@ -1,7 +1,7 @@
 import os,sys
-import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY  
 from populate_quadrants import Populator
+from private_stuff import *
 
 # invoke this program like this:
 # python human_player.py <match_percentage_threshold> <max_attempts>
@@ -16,12 +16,6 @@ class HumanPlayer:
         self.max_attempts=max_attempts
         self.battleship_table = os.getenv("BATTLESHIP_TABLE", "vb.battleship")
 
-    def get_connection(self):
-        connection = psycopg.connect(**self.db_config)
-        # use unpacking operator ** to turn dict to separate args:
-        assert connection is not None, "get_connection() returned None (connection failed)"
-        return connection
-
     def run(self):
         print('\n ******* BEGINNING PLAYER TARGETING ATTEMPTS ********\n')
         attempt_counter=1
@@ -30,6 +24,7 @@ class HumanPlayer:
             while usr_input=='':
                 usr_input=input('enter a number between 1 and 4 for the quadrant ')
                 if usr_input=='end':
+                    close_pool()
                     sys.exit(0)
                 quadrant=int(usr_input)
             ship_type_num=''
@@ -64,7 +59,7 @@ class HumanPlayer:
                 """
 
             try:
-                with self.get_connection() as conn:
+                with get_connection() as conn:
                     with conn.cursor() as cur:
                         cur.execute(query)
                         results = cur.fetchall()
@@ -87,6 +82,7 @@ class HumanPlayer:
 
         ## end of condition check for attempt_counter<max_attempts
         print('\n\n\t<****> You have used up all your attempts, Exiting...\n')
+        close_pool()
         sys.exit(0)
 
 
@@ -114,7 +110,7 @@ class HumanPlayer:
         query = f"DELETE FROM {self.battleship_table} WHERE PK=%s::UUID;"
         args=(pk,)
         try:
-            with self.get_connection() as conn:
+            with get_connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute(query,args)
         except Exception as e:
@@ -127,6 +123,7 @@ class HumanPlayer:
         while(decision=='y' or decision=='Y'):
             decision = input('Do you wish to add a ship to the database? (y / n)  ')
             if decision=='end':
+                close_pool()
                 sys.exit(0)
             if (decision=='y' or decision=='Y'):
                 self.place_new_ship()
@@ -138,12 +135,14 @@ class HumanPlayer:
         while usr_input=='':
             usr_input=input('enter a number between 1 and 4 for the quadrant ')
             if usr_input=='end':
+                close_pool()
                 sys.exit(0)
             quadrant=int(usr_input)
         ship_type_num=''
         while ship_type_num=='':
             ship_type_num=input('Enter a number corresponding to a ship type: 1 (destroyer) 2 (skiff) 3 (submarine) 4 (aircraft_carrier)  ')
             if ship_type_num=='end':
+                close_pool()
                 sys.exit(0)
         if ship_type_num=='1':
             ship_type='destroyer'
@@ -162,35 +161,8 @@ class HumanPlayer:
 
 # --- Likely entry point for the python interpretor ---
 if __name__ == "__main__":
-    db_config = {
-        'host': 'localhost',
-        'port': 26257,
-        'dbname': 'vb',
-        'user': 'root'
-    }
-
-    # to utilize certs set the env variable SECURE_CRDB=true
-    # export SECURE_CRDB=true
-    CERTDIR = '/Users/owentaylor/.cockroach-certs'
-    db_config_secure = {
-        'host': 'localhost',
-        'port': 26257,
-        'dbname': 'vdb',
-        'user': 'root',
-        # SSL parameters:
-        'sslmode': 'verify-full',         # or 'verify-full' if your host matches the cert SAN
-        'sslrootcert': f'{CERTDIR}/ca.crt',
-        'sslcert': f'{CERTDIR}/client.root.crt',
-        'sslkey': f'{CERTDIR}/client.root.key',
-        'connect_timeout': 10,
-    }
-    if(os.getenv("SECURE_CRDB", "false")=='true'):
-        print('USING SECURE CONNECTIONS...')
-        db_config=db_config_secure
-    else:
-        print('USING NON-SECURE (PLAIN) CONNECTIONS...')
-
     player = HumanPlayer(db_config,float(sys.argv[1]),int(sys.argv[2]))
     player.explain_game_play()
     player.ask_place_another()
     player.run()
+    close_pool()

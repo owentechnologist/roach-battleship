@@ -1,7 +1,8 @@
 import random
 import time,sys,os
-import psycopg 
-from vector_battleship_create import make_ship_shape_from_anchorXY  
+
+from vector_battleship_create import make_ship_shape_from_anchorXY 
+from private_stuff import get_connection, close_pool
 ''' 
 This class provides the behavior of an automated player who:
 1. picks a quadrant at random
@@ -9,117 +10,191 @@ This class provides the behavior of an automated player who:
 3. picks an anchor point at random
 4. checks for collision between ship at anchor point in quadrant and ships in vector database
 5. prints out result
-6. sleeps for 1 second when it detects ships in the same quadrant and hones in on same quadrant 
+6. sleeps for 1 second when it detects similar ships in the same quadrant and hones in on same quadrant 
 '''
 
 class AutomatedPlayer:
-    def __init__(self, db_config, match_percentage_threshold,sleep_when_honing_millis):
-        self.db_config = db_config
+    def __init__(self, match_percentage_threshold,sleep_when_honing_millis):
         self.ship_types = ['submarine', 'destroyer', 'aircraft_carrier', 'skiff']
         self.quadrants = [1, 2, 3, 4]
         self.match_percentage_threshold = match_percentage_threshold
         self.sleep_when_honing_millis=int(sleep_when_honing_millis) * .001
         self.battleship_table = os.getenv("BATTLESHIP_TABLE", "battleship")
 
-    def get_connection(self):
-        connection = psycopg.connect(**self.db_config)
-        # use unpacking operator ** to turn dict to separate args:
-        assert connection is not None, "get_connection() returned None (connection failed)"
-        return connection
+    def think_and_offer_next_guess(self, guesses_memory_list):
+        """
+        Determines the next move. Logic:
+        - If no memory, start at Q1 (1,1).
+        - If last guess was a total miss (0.0), increment quadrant.
+        - If last guess was a hit/improvement, continue scanning current quadrant.
+        """
+        # 1. Initial Case: No prior guesses
+        history_exists = False
+        trend_warmer = False
+        if not guesses_memory_list:
+            new_guess = (1, 1, 1, 0.0) # (quadrant, y, x, score)
+            guesses_memory_list.append(new_guess)
+            return new_guess
+
+        # 2. Extract last result
+        last_quad, last_y, last_x, last_score = guesses_memory_list[-1]
+        
+        new_quad = last_quad
+        new_y, new_x = last_y, last_x
+
+        # 3. Extract nearness trend from prior guesses:
+        if len(guesses_memory_list) >= 2:
+            history_exists = True
+            history_quad, history_y, history_x, history_score = guesses_memory_list[-2]
+        if history_exists == True and last_score > history_score:
+            trend_warmer = True
+        elif history_exists == True and last_score <= history_score:
+            trend_warmer = False
+        # 4. Quadrant Rotation Logic
+        # If score is 0, we move to the next quadrant and reset coords
+        if last_score == 0.0:
+            new_quad = last_quad + 1 if last_quad < 4 else 1
+            new_y, new_x = 1, 1
+        else:
+            # 5. Intra-Quadrant Scanning Logic (Warmer/Honing)
+            if (not history_exists) or trend_warmer:
+                # WARMEST/INITIAL: Continue the scan
+                if last_y < 10:
+                    new_y = last_y + 1
+                elif last_x < 10:
+                    new_y = 1
+                    new_x = last_x + 1
+                else:
+                    # Reached 10,10 - force quadrant shift
+                    last_score = 0.0 
+
+            elif not trend_warmer:
+                # COLDER: The last move was a mistake. 
+                # Try jumping to the next column and resetting Y to 1 
+                # to "clear" the cold zone.
+                if last_x < 10:
+                    new_x = last_x + 1
+                    new_y = 1
+                else:
+                    # X is exhausted
+                    last_score = 0.0
+
+            # Final Safety Clamp: Ensure we never go below 1 or above 10
+            new_x = max(1, min(10, new_x))
+            new_y = max(1, min(10, new_y))
+
+            # 6. Quadrant Transition (Triggered by score 0 or exhaustion)
+            if last_score == 0.0:
+                new_quad = (last_quad % 4) + 1
+                new_y, new_x = 1, 1
+
+        new_guess_tuple = (new_quad, new_y, new_x, 0.0)
+        guesses_memory_list.append(new_guess_tuple)
+        return new_guess_tuple
 
     def run(self):
-        nearby_ship = False
-        suspect_quadrant = 4
+        duration = 0
+        attempt_limit = 300
+        attempt_counter = 0
+        guesses_memory_list = [] # Stores (quad, y, x, score)
+        
+        # State tracking
         suspect_ship_type = 'submarine'
-        suspect_ship_reuse_count = 1 ## so humans clearly see when we get to 10
-        attempt_counter=0
-        attempt_counter_exceeded=False
-        suspect_ship_reuse_x_set= {0,}
-        suspect_ship_reuse_y_set= {0,}
-        while attempt_counter_exceeded==False:
-            ship_type = random.choice(self.ship_types)
-            quadrant = random.choice(self.quadrants)
-            anchor_x = random.randint(1, 10)
-            while anchor_x in suspect_ship_reuse_x_set:
-                anchor_x = random.randint(1, 14)
-            suspect_ship_reuse_x_set.add(anchor_x)
-            anchor_y = random.randint(1, 10)
-            while anchor_y in suspect_ship_reuse_y_set:
-                anchor_y = random.randint(1, 14)
-            attempt_counter=attempt_counter+1
-            if(attempt_counter>100):
-                attempt_counter_exceeded=True
-            if(nearby_ship==True):
-                #do nearbyShip things
-                quadrant = suspect_quadrant
-                if(suspect_ship_reuse_count<11):
-                    ship_type = suspect_ship_type
-                else:
-                    suspect_ship_reuse_count=1
-                    suspect_ship_reuse_x_set.clear()
-                    suspect_ship_reuse_y_set.clear()
-            else:
-                #do dissimilar ship things:
-                suspect_ship_reuse_x_set.clear()
-                suspect_ship_reuse_y_set.clear()
+        suspect_ship_reuse_count = 0
+        
+        print("🚀 Initializing Systematic Search...")
 
-            print(f"\nTargeting a '{ship_type}' in quadrant {quadrant} at anchor ({anchor_x}, {anchor_y})")
-
-            vector = make_ship_shape_from_anchorXY(anchor_x, anchor_y, ship_type)
+        while attempt_counter < attempt_limit:
+            attempt_counter += 1
+            
+            # 1. Ask the 'thinker' for the next coordinate/quadrant
+            current_guess = self.think_and_offer_next_guess(
+                guesses_memory_list
+            )
+            
+            # Unpack the guess (Note: we use [-1] from the list modified by the thinker)
+            quadrant, anchor_y, anchor_x, _ = current_guess
+            
+            # 2. Construct the vector for the DB query
+            vector = make_ship_shape_from_anchorXY(anchor_x, anchor_y, suspect_ship_type)
             vector_string = "[" + ", ".join(map(str, vector)) + "]"
 
             query = f"""
-            WITH target_vector AS (
-                SELECT '{vector_string}'::vector AS v
-            )
+            WITH target_vector AS (SELECT '{vector_string}'::vector AS v)
             SELECT battleship_class, pk, anchorpoint,
                 ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) AS "Percent Match"
             FROM {self.battleship_table}, target_vector 
             WHERE quadrant = {quadrant}
-              AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= {self.match_percentage_threshold}
-            ORDER BY "Percent Match" DESC
-            LIMIT 2;
+            AND ROUND((1 / (1 + (coordinates_embedding <-> v))) * 100, 2) >= {self.match_percentage_threshold}
+            ORDER BY "Percent Match" DESC LIMIT 1;
             """
 
             try:
-                with self.get_connection() as conn:
+                match_found = False
+                with get_connection() as conn:
                     with conn.cursor() as cur:
+                        time_before = time.time_ns()
                         cur.execute(query)
                         results = cur.fetchall()
+                        duration = (time.time_ns()/1000000)-(time_before/1000000)
+                        print(f"Vector Query Took: {duration:.3f} ms")
                         if results:
-                            print("\nAt least one ship detected in quadrant:")
-                            for row in results:
-                                val=row[0]
-                                val = val.strip()
-                                print(f"  - Detected_Ship_Class: {val}, Match_Percentage: {row[3]}%, Hidden_Anchor_Point: {row[2]}")
-                                if((row[3]>self.match_percentage_threshold) and (row[3]<100.00) and (val==ship_type)):
-                                    print(f'\n📡 Honing in on quadrant {quadrant} with suspect_ship_type {ship_type} and suspect_ship_reuse_count {suspect_ship_reuse_count}')
-                                    suspect_quadrant = quadrant
-                                    suspect_ship_type = ship_type
-                                    suspect_ship_reuse_count=suspect_ship_reuse_count+1
-                                    nearby_ship = True
-                                    time.sleep(self.sleep_when_honing_millis) ## give user a chance to notice 'honing in'
-                                if(row[3]==100.00):
-                                    print(f"\n\n\t<****> AFTER {attempt_counter} ATTEMPTS <****> \n\n\t\tPERFECT HIT -- EXITING PROGRAM")
-                                    self.blast_ship_out_of_existence(row[1])
-                                    sys.exit(0)
-                        else:
-                            print("No similar and/or nearby ships detected in quadrant.")
-                            nearby_ship = False
-            except Exception as e:
-                print(f"❌ Error during processing: {e}")
+                            row = results[0]
+                            ship_class = row[0].strip()
+                            score = row[3]
+                            anchor_pt = row[2]
+                            
+                            print(f"Attempt {attempt_counter}: Q{quadrant} ({anchor_x},{anchor_y}) -> MATCH: {score}%  against ship_type {ship_class}")
+                            
+                            # Update memory with the real score
+                            # if the best match is against flotsam - change score to 0.0
+                            if "flotsam" == ship_class:
+                                score = 0.0
+                                print(f"Closest match is {ship_class} near that location - CHANGING TARGET QUADRANT")
+                                
+                            
+                            guesses_memory_list[-1] = (quadrant, anchor_y, anchor_x, score)
+                            
+                            if score == 100.0:
+                                print(f"\n🎯 PERFECT HIT! Ship {row[1]} destroyed at {anchor_pt}.")
+                                self.blast_ship_out_of_existence(row[1])
+                                return # Exit successfully
+                            
+                            if score > self.match_percentage_threshold and ship_class == suspect_ship_type:
+                                print(f"📡 Honing in... Current count: {suspect_ship_reuse_count}")
+                                suspect_ship_reuse_count += 1
+                                time.sleep(self.sleep_when_honing_millis / 1000)
 
-            #time.sleep(.1) #100 millis not necessary as we enjoy watching the bot work!
-        ## end of condition check for attempt_counter<max_attempts
-        print('\n\n\t<****> The bot has used up all 100 of its attempts, Exiting...\n')
-        sys.exit(0)
+                            # if closest match is a ship of a different class from the prior guess - switch ship_class
+                            elif score > self.match_percentage_threshold and not ship_class == suspect_ship_type:
+                                print(f"SURPRISE!  Targeting discovered {ship_class} near that location")
+                                suspect_ship_reuse_count = 0
+                                time.sleep(self.sleep_when_honing_millis / 1000)
+                                suspect_ship_type = ship_class
+                            
+                            match_found = True
+
+                if not match_found:
+                    print(f"Attempt {attempt_counter}: Q{quadrant} ({anchor_x},{anchor_y}) -> No detections.")
+                    # Update memory with 0.0 so the thinker knows to change quadrants
+                    guesses_memory_list[-1] = (quadrant, anchor_y, anchor_x, 0.0)
+                    suspect_ship_type = random.choice(self.ship_types)
+
+                    suspect_ship_reuse_count = 0 # Reset honing count on miss
+
+            except Exception as e:
+                print(f"❌ Error: {e}")
+
+        print(f"\nLimit reached. Total attempts: {attempt_counter}")
+
+
 
     def blast_ship_out_of_existence(self,pk):
         print(f'\n\n%^%^%^%^***. KABLOOEY!!!!! \n\ndeleting row with PK == {pk}')
         query = f"DELETE FROM {self.battleship_table} WHERE PK=%s::UUID;"
         args=(pk,)
         try:
-            with self.get_connection() as conn:
+            with get_connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute(query,args)
         except Exception as e:
@@ -127,37 +202,10 @@ class AutomatedPlayer:
 
 # --- Likely entry point for the python interpretor ---
 if __name__ == "__main__":
-    db_config = {
-        'host': 'localhost',
-        'port': 26257,
-        'dbname': 'vb',
-        'user': 'root'
-    }
-
-    # to utilize certs set the env variable SECURE_CRDB=true
-    # export SECURE_CRDB=true
-    CERTDIR = '/Users/owentaylor/.cockroach-certs'
-    db_config_secure = {
-        'host': 'localhost',
-        'port': 26257,
-        'dbname': 'vdb',
-        'user': 'root',
-        # SSL parameters:
-        'sslmode': 'verify-full',         # or 'verify-full' if your host matches the cert SAN
-        'sslrootcert': f'{CERTDIR}/ca.crt',
-        'sslcert': f'{CERTDIR}/client.root.crt',
-        'sslkey': f'{CERTDIR}/client.root.key',
-        'connect_timeout': 10,
-    }
-    if(os.getenv("SECURE_CRDB", "false")=='true'):
-        print('USING SECURE CONNECTIONS...')
-        db_config=db_config_secure
-    else:
-        print('USING NON-SECURE (PLAIN) CONNECTIONS...')
-
     honing_sleep_time=200 #millis
     if(len(sys.argv)>2):
         honing_sleep_time=sys.argv[2]
-    player = AutomatedPlayer(db_config,float(sys.argv[1]),honing_sleep_time)
+    player = AutomatedPlayer(float(sys.argv[1]),honing_sleep_time)
     
     player.run()
+    close_pool()

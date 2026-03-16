@@ -1,20 +1,14 @@
 import random,sys,os
 import psycopg 
 from vector_battleship_create import make_ship_shape_from_anchorXY
+from private_stuff import *
 
 class Populator:
-    def __init__(self, db_config, number_of_objects):
-        self.db_config = db_config
+    def __init__(self, number_of_objects):
         self.ship_types = ['submarine', 'destroyer', 'aircraft_carrier', 'skiff', 'flotsam']
         self.quadrants = [1, 2, 3, 4]
         self.number_of_objects = number_of_objects
         self.battleship_table = os.getenv("BATTLESHIP_TABLE", "vb.battleship")
-
-    def get_connection(self):
-        connection = psycopg.connect(**self.db_config)
-        # use unpacking operator ** to turn dict to separate args:
-        assert connection is not None, "get_connection() returned None (connection failed)"
-        return connection
     
     # this function allows for the insertion of new ships into the vectorDB
     # the caller supplies the ship_type, quadrant, and anchor points
@@ -31,7 +25,7 @@ class Populator:
         coordinates_embedding =  f'{vector_string}'
         args = (ship_type, quadrant, anchor_x+((anchor_y*10)-10),coordinates_embedding) 
         try:
-            with self.get_connection() as conn:
+            with get_connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute(query,args)
         except Exception as e:
@@ -70,34 +64,6 @@ class Populator:
 
 # --- Example usage ---
 if __name__ == "__main__":
-    db_config = {
-        'host': 'localhost',
-        'port': 26257,
-        'dbname': 'vb',
-        'user': 'root'
-    }
-
-    # to utilize certs set the env variable SECURE_CRDB=true
-    # export SECURE_CRDB=true
-    CERTDIR = '/Users/owentaylor/.cockroach-certs'
-    db_config_secure = {
-        'host': 'localhost',
-        'port': 26257,
-        'dbname': 'vdb',
-        'user': 'root',
-        # SSL parameters:
-        'sslmode': 'verify-full',         # or 'verify-full' if your host matches the cert SAN
-        'sslrootcert': f'{CERTDIR}/ca.crt',
-        'sslcert': f'{CERTDIR}/client.root.crt',
-        'sslkey': f'{CERTDIR}/client.root.key',
-        'connect_timeout': 10,
-    }
-    if(os.getenv("SECURE_CRDB", "false")=='true'):
-        print('USING SECURE CONNECTIONS...')
-        db_config=db_config_secure
-    else:
-        print('USING NON-SECURE (PLAIN) CONNECTIONS...')
-
-
-    pop = Populator(db_config,float(sys.argv[1]))
+    pop = Populator(float(sys.argv[1]))
     pop.run()
+    close_pool()

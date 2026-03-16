@@ -1,4 +1,5 @@
 demo.md
+connection_stuff.py
 cockroach-data
 rbenv/**
 .env
