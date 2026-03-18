@@ -9,7 +9,8 @@ USE vb;
 
 -- dropping tables may be useful if you want to clean up:
 drop table IF EXISTS vb.battleship;
-
+drop table IF EXISTS vb.battle_v11;
+drop table IF EXISTS vb.battle_v21;
 -- look at what tables exist in your database:
 SHOW tables;
 
@@ -18,7 +19,7 @@ SHOW tables;
 CREATE TABLE IF NOT EXISTS vb.battleship(
    pk UUID PRIMARY KEY DEFAULT gen_random_uuid(),
    battleship_class CHAR(20) NOT NULL DEFAULT 'destroyer' CHECK (battleship_class in ('aircraft_carrier', 'skiff','destroyer','submarine','flotsam')),
-   quadrant SMALLINT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 4),
+   quadrant INT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 1000000),
    anchorpoint SMALLINT NOT NULL DEFAULT 23 CHECK (anchorpoint BETWEEN 1 AND 95),
    coordinates_embedding VECTOR(105),
    VECTOR INDEX (quadrant, coordinates_embedding vector_l2_ops) -- default is L2 for KNN, explicit use just for clarity
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS vb.battleship(
 CREATE TABLE IF NOT EXISTS vb.battle_v11(
    pk UUID PRIMARY KEY DEFAULT gen_random_uuid(),
    battleship_class CHAR(20) NOT NULL DEFAULT 'destroyer' CHECK (battleship_class in ('aircraft_carrier', 'skiff','destroyer','submarine','flotsam')),
-   quadrant SMALLINT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 4),
+   quadrant INT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 1000000),
    anchorpoint SMALLINT NOT NULL DEFAULT 23 CHECK (anchorpoint BETWEEN 1 AND 95),
    coordinates_embedding VECTOR(11),
    VECTOR INDEX (quadrant, coordinates_embedding vector_l2_ops) -- default is L2 for KNN, explicit use just for clarity
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS vb.battle_v11(
 CREATE TABLE IF NOT EXISTS vb.battle_v21(
    pk UUID PRIMARY KEY DEFAULT gen_random_uuid(),
    battleship_class CHAR(20) NOT NULL DEFAULT 'destroyer' CHECK (battleship_class in ('aircraft_carrier', 'skiff','destroyer','submarine','flotsam')),
-   quadrant SMALLINT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 4),
+   quadrant INT NOT NULL DEFAULT 2 CHECK (quadrant BETWEEN 1 AND 1000000),
    anchorpoint SMALLINT NOT NULL DEFAULT 23 CHECK (anchorpoint BETWEEN 1 AND 95),
    coordinates_embedding VECTOR(21),
    VECTOR INDEX (quadrant, coordinates_embedding vector_l2_ops) -- default is L2 for KNN, explicit use just for clarity

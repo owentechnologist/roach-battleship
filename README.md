@@ -139,17 +139,25 @@ select pk, anchorpoint, battleship_class, quadrant from battleship order by quad
 ## Run the populate_quadrants.py program to write a bunch of battleships into the database:
 
 ```
-python3 populate_quadrants.py <number_of_ships_to_create>
+python3 populate_quadrants.py <number_of_ships_to_create> <number_of_quadrants>
 ```
 
-example:
+example with small dataset:
 
 ```
-python3 populate_quadrants.py 15
+python3 populate_quadrants.py 15 4
 ```
 
 
-## Run the human_player.py program to try your hand at seeking battleships
+example with large dataset:
+
+```
+python3 populate_quadrants.py 15000 3000
+```
+
+## Run the human_player.py program to try your hand at seeking battleships 
+## note you will not be told how many possible quadrants exist - you will have to query the DB using:
+## SELECT max(quadrant) AS "max_quadrant" from vb.battle_v21; 
 
 
 ```
@@ -163,9 +171,14 @@ python3 human_player.py 45 10
 ```
 
 ## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
+```
+You need at least the first arg of the following ordered args: <percentage> <max_attempts> <sleep_time> <should_switch>
+Example: python3 battle_bot.py 85 200
+Example: python3 battle_bot.py 65 1000 0 False
+```
 
 ```
-python3 battle_bot.py <match_percentage_threshold> <optional_sleep_when_honing_millis>
+python3 battle_bot.py <percentage> <max_attempts> <sleep_time> <should_switch>
 ```
 
 Example uses default of 200 millis sleep when ship detected:
@@ -177,7 +190,7 @@ python3 battle_bot.py 70
 Example user-specified sleep time of 10 millis when ship detected:
 
 ```
-python3 battle_bot.py 70 10
+python3 battle_bot.py 70 100 10
 ```
 
 ## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
