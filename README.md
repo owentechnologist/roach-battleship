@@ -179,6 +179,8 @@ python3 battle_bot.py 70 100 10
 ## Web-Based UI: Play Vector Battleship in your browser
 <a id="web-ui"></a>
 
+![Web-ui](./web-ui.png)
+
 A single-file web interface using the Bottle framework provides visual feedback with color-coded heat maps showing how close you are to finding ships.
 
 To play with a web-UI: Start the web server from the project root directory:
