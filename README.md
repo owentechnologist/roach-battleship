@@ -103,11 +103,12 @@ cockroach sql --insecure -f crdb_setup.sql
 
 When running populate_quadrants.py, batle_bot.py or human_player.py CLI versions of the app, enable specific vector dimensions by setting the following env variable: (choices are default (105), battle_v11 (11), and battle_v21 (21))
 
+ 
+### when battle_v21 is selected, a 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
+
 ```
 export BATTLESHIP_TABLE=vb.battle_v21
 ```
- 
-### when battle_v21 is selected, a 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
 
 ### when battle_v11 is selected, an 11 dimension vector is used to represent the ships. (this is less accurate) 
 
