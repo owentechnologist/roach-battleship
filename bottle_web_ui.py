@@ -149,6 +149,23 @@ body {
     background: #0d1117;
 }
 
+.quadrant-selector input[type="number"] {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    border: 2px solid #533483;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    width: 100px;
+}
+
+.quadrant-selector input[type="number"]:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+
 .start-game-button {
     margin-left: 15px;
     padding: 8px 20px;
@@ -487,7 +504,7 @@ body {
                         <button id="start-game-button" class="start-game-button">START GAME</button>
                     </div>
 
-                    <div class="quadrant-selector" id="quadrant-selector-container" style="display: none;">
+                    <!-- <div class="quadrant-selector" id="quadrant-selector-container" style="display: none;">
                         <label for="quadrant">Quadrant:</label>
                         <select id="quadrant" name="quadrant">
                             <option value="1">1</option>
@@ -495,6 +512,12 @@ body {
                             <option value="3">3</option>
                             <option value="4">4</option>
                         </select>
+                    </div>
+                    -->
+
+                    <div class="quadrant-selector" id="quadrant-selector-container" style="display: none;">
+                        <label for="quadrant">Quadrant (1-?):</label>
+                        <input type="number" id="quadrant" name="quadrant" min="1" placeholder="Enter quadrant" value="1">
                     </div>
 
                     <div class="canvas-container">
@@ -811,7 +834,7 @@ class GridRenderer {
 class GameController {
     constructor() {
         this.sessionId = null;
-        this.maxQuadrants = 4;
+        this.maxQuadrants = 1000000;
         this.currentX = 5;
         this.currentY = 5;
         this.gameActive = false;
@@ -869,9 +892,11 @@ class GameController {
             }
         });
 
-        // Quadrant selector
-        document.getElementById('quadrant').addEventListener('change', () => {
-            if (window.gridRenderer) {
+        document.getElementById('quadrant').addEventListener('input', () => {
+            // We check if the value is not empty to avoid rendering errors while typing
+            const val = document.getElementById('quadrant').value;
+            
+            if (window.gridRenderer && val !== "") {
                 window.gridRenderer.clearAttempts();
                 window.gridRenderer.render();
             }
@@ -912,7 +937,7 @@ class GameController {
 
             // Update UI
             const tableName = battleshipTable.replace('vb.', '');
-            document.getElementById('session-id').textContent = `Session: ${this.sessionId.substring(0, 8)}... | Table: ${tableName}`;
+            document.getElementById('session-id').textContent = `Session: ${this.sessionId.substring(0, 8)}... | Table: ${tableName} | Max Q: ${this.maxQuadrants}`;
 
             // Populate quadrant selector
             this.populateQuadrantSelector();
@@ -935,14 +960,10 @@ class GameController {
 
     populateQuadrantSelector() {
         const selector = document.getElementById('quadrant');
-        selector.innerHTML = '';
-
-        for (let i = 1; i <= this.maxQuadrants; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            selector.appendChild(option);
-        }
+        // For number input, just set the max attribute
+        selector.max = this.maxQuadrants;
+        selector.value = 1; // Set default value to 1
+        selector.placeholder = `1-${this.maxQuadrants}`;
     }
 
     async fireTorpedo() {
@@ -951,7 +972,21 @@ class GameController {
         }
 
         // Get current selections
-        const quadrant = parseInt(document.getElementById('quadrant').value);
+        const quadrantValue = document.getElementById('quadrant').value;
+
+        // Validate quadrant input
+        if (!quadrantValue || quadrantValue === '') {
+            alert('Please enter a quadrant number');
+            return;
+        }
+
+        const quadrant = parseInt(quadrantValue);
+
+        if (isNaN(quadrant) || quadrant < 1 || quadrant > this.maxQuadrants) {
+            alert(`Quadrant must be between 1 and ${this.maxQuadrants}`);
+            return;
+        }
+
         const shipType = document.querySelector('input[name="ship_type"]:checked').value;
         const anchorX = this.currentX;
         const anchorY = this.currentY;
