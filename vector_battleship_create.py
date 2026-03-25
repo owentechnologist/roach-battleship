@@ -131,12 +131,15 @@ def assign_105_elements(ship_type,ship_points):
 # breaking this portion out to isolate the assignment of the elements of the vector
 # this encourages the consideration of non-sparse and alternative length 
 # implementations
-# number_of_dimensions will determine which creation strategy is used 
-def create_vector_as_list(ship_type,ship_points):
+# number_of_dimensions is dependent on the table chosen and will determine 
+# which creation strategy is used 
+def create_vector_as_list(ship_type,ship_points,battleship_table=None):
     number_of_dimensions=105
-    if(os.getenv("BATTLESHIP_TABLE", "battleship")=='vb.battle_v11'):
+    # Allow explicit table parameter to override environment variable
+    table_to_use = battleship_table if battleship_table else os.getenv("BATTLESHIP_TABLE", "battleship")
+    if(table_to_use=='vb.battle_v11'):
         number_of_dimensions=11
-    elif(os.getenv("BATTLESHIP_TABLE", "battleship")=='vb.battle_v21'):
+    elif(table_to_use=='vb.battle_v21'):
         number_of_dimensions=21
     vector_elements=[]
     if(number_of_dimensions==105):
@@ -148,8 +151,8 @@ def create_vector_as_list(ship_type,ship_points):
     return vector_elements
 
 # with one hot encoding for type and additional area_measure --> vector is now 105 dimensions
-# accepts ship_type of 'submarine', 'destroyer','aircraft_carrier','skiff'
-def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
+# accepts ship_type of 'submarine', 'destroyer','aircraft_carrier','skiff','flotsam'
+def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type,battleship_table=None):
     anchorX=int(anchorX)
     anchorY=int(anchorY)
     # make sure ship fits in our small grid 10x10:
@@ -281,7 +284,7 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
     if ship_type == 'flotsam':
         # if ship_type == flotsam:
         # this is not a ship it is garbage/white noise
-        # anchor values are ignored each point is assigned a random value
+        # some point are assigned a random value
         # result may be something like this:
         # []\ \[][][][] . [][]
         #   . [][]| |[] . [][][]
@@ -289,10 +292,10 @@ def make_ship_shape_from_anchorXY(anchorX,anchorY,ship_type):
         anchorX = 1
         anchorY = 3
         anchor_point=30    
-        ship_points=[anchor_point,anchor_point+2,anchor_point+3,
+        ship_points=[anchor_point,anchor_point+2,anchor_point+int(random(3,10)),
                      anchor_point+11,anchor_point+14,anchor_point+15,
-                     anchor_point+20,anchor_point+22,anchor_point+24,anchor_point+26,
-                     anchor_point+30,anchor_point+31,anchor_point+34,anchor_point+35,anchor_point+36,anchor_point+37]
+                     anchor_point+20,anchor_point+22,anchor_point+24,anchor_point+int(random(25,29)),
+                     anchor_point+30,anchor_point+31,anchor_point+34,anchor_point+35,anchor_point+36,anchor_point+int(random(37,99))]
 
     print(f' Target generated {ship_type} has anchor_point of {anchorX+((anchorY*10)-10)}')
 

@@ -5,35 +5,27 @@ This repo is a demo of using Euclidean distance with Vector Search to identify s
 
 It could be an interesting challenge for the curious to enhance the battle_bot logic to make it smarter.  Have fun!
 
-## The default vectorization uses 105 elements/dimensions, there is an optional second table and strategy for the vector embeddings that reduces their size from 105 to 11 dimensions.  This embedding model is very different in its behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  To enable this alternate behavior set the following env variable:
+## The default vectorization uses 105 elements/dimensions, there is an optional second table and strategy for the vector embeddings that reduces their size from 105 to 11 dimensions.  This embedding model is very different in its behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  
 
-```
-export BATTLESHIP_TABLE=vb.battle_v11
-```
 
- ## when battle_v11 is selected, an 11 dimension vector is used to represent the ships.  
- 
-## another option is to set the table to use a 21 dimension vector: (this one is the 'Goldilocks' option)
+## Web-Based UI: Play Vector Battleship in your browser
 
-```
-export BATTLESHIP_TABLE=vb.battle_v21
-```
+A single-file web interface using the Bottle framework provides visual feedback with color-coded heat maps showing how close you are to finding ships.
 
- ## To set the default table and strategy back to 105 dimensions use:
+### Setup and Run
 
-```
-export BATTLESHIP_TABLE=vb.battleship
-```
+1. Ensure your local python environment is ready and your CockroachDB instance is installed and running and the database schema has been initialized (details below)
+
 ## Python-preparation Steps for running the program on your machine:
 
 
-1. Create a virtual environment:
+a. Create a virtual environment:
 
 ```
 python3 -m venv rbenv
 ```
 
-2. Activate it:  [This step is repeated anytime you want this venv back]
+b. Activate it:  [This step is repeated anytime you want this venv back]
 
 ```
 source rbenv/bin/activate
@@ -53,8 +45,6 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 Then confirm with Y when prompted.
 
-
-
 ## Python will utilize this requirements.txt in the project:
 
 ```
@@ -62,7 +52,7 @@ psycopg[binary]
 
 ```
 
-3. Install the libraries: [only necesary to do this one time per environment]
+c. Install the libraries: [only necesary to do this one time per environment]
 
 ```
 pip3 install -r requirements.txt
@@ -105,11 +95,92 @@ This local instance of cockroachDB will run listening on port 26257 (for SQL and
 
 This local instance will also listen on port 8080 with its web-browser-serving dbconsole UI 
 
-## From a separate shell you can connect to this instance, create a database and the tables needed to begin:
+# DB SETUP!
+
+### From a separate shell you can connect to this instance, create a database and the tables needed to begin:
 
 to execute all the SQL commands needed plus some test queries from the root of this project do:
 ```
 cockroach sql --insecure -f crdb_setup.sql
+```
+
+
+2. Make sure you have ships in the database (use populate_quadrants.py ) NB: Be sure to set the vector type based on the table you intend to use:
+
+```
+export BATTLESHIP_TABLE=vb.battle_v21
+```
+
+## Run the populate_quadrants.py program to write a bunch of battleships into the database:
+
+```
+python3 populate_quadrants.py <number_of_ships_to_create> <number_of_quadrants>
+```
+
+example with small dataset:
+
+```
+python3 populate_quadrants.py 15 4
+```
+
+example with large dataset:
+
+```
+python3 populate_quadrants.py 15000 3000
+```
+
+3. Start the web server from the project root directory:
+
+```
+python3 bottle_web_ui.py
+```
+
+The server will start on http://localhost:8000
+
+5. Open your browser and navigate to:
+
+```
+http://localhost:8000
+```
+
+### How to Play
+
+- **Select Vector Dimensions**: Choose which Vector Table to target (dropdown at top of grid)
+- **Select Quadrant**: Choose which quadrant to target (dropdown at top of grid)
+- **Choose Ship Type**: Select submarine, destroyer, skiff, or aircraft carrier
+- **Select Coordinates**: Click on the grid or use the X/Y sliders to pick coordinates
+- **Fire Torpedo**: Click the "FIRE TORPEDO!" button to attempt targeting
+- **View Results**:
+  - Match percentage shows how close you are (higher = closer)
+  - Color coding: Blue (cold) → Purple (cool) → Pink (warm) → Red (hot) → Gold (direct hit!)
+  - Trend indicators show if you're getting warmer (↑) or cooler (↓)
+  - Previous attempts appear on the grid with colored markers
+
+Win by achieving a 100% match within 20 attempts!
+
+### Single-File Design
+
+The entire web UI (HTML, CSS, JavaScript, and backend logic) is contained in a single Python file (`bottle-ui.py`) for simplicity and portability. No separate static files or multiple modules needed!
+
+## CLI VERSIONS:
+When running the batle_bot.py or human_player.py CLI versions of the app, enable specific vector dimensions by setting the following env variable: (choices are default (105), battle_v11 (11), and battle_v21 (21))
+
+```
+export BATTLESHIP_TABLE=vb.battle_v21
+```
+ 
+## when battle_v21 is selected, an 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
+
+## when battle_v11 is selected, an 11 dimension vector is used to represent the ships. (this is less accurate) 
+
+```
+export BATTLESHIP_TABLE=vb.battle_v11
+```
+
+## 105 dimensions was the original attempt by this author and is less efficient and no more accurate than v21:
+
+```
+export BATTLESHIP_TABLE=vb.battleship
 ```
 
 If you wish to execute other sql -- The following command connects using the provided SQL CLI:
@@ -135,24 +206,6 @@ A sample query you may wish to run:
 
 ```
 select pk, anchorpoint, battleship_class, quadrant from battleship order by quadrant asc;
-```
-## Run the populate_quadrants.py program to write a bunch of battleships into the database:
-
-```
-python3 populate_quadrants.py <number_of_ships_to_create> <number_of_quadrants>
-```
-
-example with small dataset:
-
-```
-python3 populate_quadrants.py 15 4
-```
-
-
-example with large dataset:
-
-```
-python3 populate_quadrants.py 15000 3000
 ```
 
 ## Run the human_player.py program to try your hand at seeking battleships 
@@ -284,8 +337,8 @@ https://localhost:8080
 ````
 
 
-### CRDB vector details:  PGVector commands and augmentations continuing in 2025
-https://www.cockroachlabs.com/docs/v25.2/vector-indexes.html
+### CRDB vector details:  PGVector commands and augmentations continuing in 2026
+https://www.cockroachlabs.com/docs/v26.2/vector-indexes.html
 
 When creating the index for searching vectors, specify the intended comparison strategy 
 (see crdb_setup.sql)

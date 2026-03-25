@@ -52,6 +52,46 @@ CREATE TABLE IF NOT EXISTS vb.battle_v21(
    --VECTOR INDEX (quadrant, battleship_class, coordinates_embedding)
 );
 
+
+-- Web UI Tables for tracking game sessions and targeting history
+-- Table to track game sessions
+CREATE TABLE IF NOT EXISTS vb.game_sessions (
+    session_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_name VARCHAR(50),
+    battleship_table VARCHAR(30) DEFAULT 'vb.battleship' CHECK (battleship_table IN ('vb.battleship', 'vb.battle_v11', 'vb.battle_v21')),
+    started_at TIMESTAMP DEFAULT NOW(),
+    ended_at TIMESTAMP,
+    match_threshold DECIMAL(5,2) DEFAULT 55.0,
+    max_attempts INT DEFAULT 20,
+    attempts_used INT DEFAULT 0,
+    status VARCHAR(20) CHECK (status IN ('active', 'won', 'lost')) DEFAULT 'active',
+    best_match_so_far DECIMAL(5,2) DEFAULT 0.0
+);
+
+-- Table to store targeting history for each game session
+CREATE TABLE IF NOT EXISTS vb.targeting_history (
+    attempt_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id UUID NOT NULL,
+    attempt_number INT NOT NULL,
+    timestamp TIMESTAMP DEFAULT NOW(),
+
+    -- Target details
+    quadrant INT NOT NULL,
+    ship_type CHAR(20) NOT NULL,
+    anchor_x SMALLINT NOT NULL,
+    anchor_y SMALLINT NOT NULL,
+
+    -- Result details
+    match_percentage DECIMAL(5,2),
+    matched_ship_class CHAR(20),
+
+    -- Trend tracking (for warm/cool visualization)
+    previous_best_match DECIMAL(5,2),
+    trend VARCHAR(10) CHECK (trend IN ('warmer', 'cooler', 'same', 'first')),
+
+    INDEX (session_id, attempt_number)
+);
+
 -- add some initial data to establish the ships in various quadrants
 INSERT into battleship (battleship_class,quadrant,anchorpoint) values ('submarine',1,53);
 INSERT into battleship (battleship_class,quadrant,anchorpoint) values ('submarine',1,37);
