@@ -5,12 +5,7 @@ This repo is a demo of using Euclidean distance with Vector Search to identify s
 
 It could be an interesting challenge for the curious to enhance the battle_bot logic to make it smarter.  Have fun!
 
-## The default vectorization uses 105 elements/dimensions, there is an optional second table and strategy for the vector embeddings that reduces their size from 105 to 11 dimensions.  This embedding model is very different in its behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  
-
-
-## Web-Based UI: Play Vector Battleship in your browser
-
-A single-file web interface using the Bottle framework provides visual feedback with color-coded heat maps showing how close you are to finding ships.
+## NB: The default vectorization uses 105 elements/dimensions, there are optional additional table and strategies for the vector embeddings that reduces their size from 105 to 11, or 21 dimensions.  These embedding models are very different in their behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  
 
 ### Setup and Run
 
@@ -104,6 +99,28 @@ to execute all the SQL commands needed plus some test queries from the root of t
 cockroach sql --insecure -f crdb_setup.sql
 ```
 
+## CLI Interactions:
+
+When running populate_quadrants.py, batle_bot.py or human_player.py CLI versions of the app, enable specific vector dimensions by setting the following env variable: (choices are default (105), battle_v11 (11), and battle_v21 (21))
+
+```
+export BATTLESHIP_TABLE=vb.battle_v21
+```
+ 
+## when battle_v21 is selected, a 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
+
+## when battle_v11 is selected, an 11 dimension vector is used to represent the ships. (this is less accurate) 
+
+```
+export BATTLESHIP_TABLE=vb.battle_v11
+```
+
+## 105 dimensions was the original attempt by this author and is less efficient and no more accurate than v21:
+
+```
+export BATTLESHIP_TABLE=vb.battleship
+```
+
 
 2. Make sure you have ships in the database (use populate_quadrants.py ) NB: Be sure to set the vector type based on the table you intend to use:
 
@@ -129,7 +146,38 @@ example with large dataset:
 python3 populate_quadrants.py 15000 3000
 ```
 
-3. Start the web server from the project root directory:
+## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
+```
+You need at least the first arg of the following ordered args: <percentage> <max_attempts> <sleep_time> <should_switch>
+Example: python3 battle_bot.py 85 200
+Example: python3 battle_bot.py 65 1000 0 False
+```
+
+```
+python3 battle_bot.py <percentage> <max_attempts> <sleep_time> <should_switch>
+```
+
+Example uses default of 200 millis sleep when ship detected:
+
+```
+python3 battle_bot.py 70
+```
+
+Example user-specified sleep time of 10 millis when ship detected:
+
+```
+python3 battle_bot.py 70 100 10
+```
+
+## NB: the battle_bot runs until it runs out of attempts or hits a ship with an exact match on type, location, and quadrant
+## It will use the match_percentage_threshold as a guide to hone in on ship_type and quadrant which should speed up finding exact matches  (the lower the threshold, the more sticky the attampts will be to the same quadrant and ship_type)
+
+
+## Web-Based UI: Play Vector Battleship in your browser
+
+A single-file web interface using the Bottle framework provides visual feedback with color-coded heat maps showing how close you are to finding ships.
+
+To play with a web-UI: Start the web server from the project root directory:
 
 ```
 python3 bottle_web_ui.py
@@ -162,26 +210,9 @@ Win by achieving a 100% match within 20 attempts!
 
 The entire web UI (HTML, CSS, JavaScript, and backend logic) is contained in a single Python file (`bottle-ui.py`) for simplicity and portability. No separate static files or multiple modules needed!
 
-## CLI VERSIONS:
-When running the batle_bot.py or human_player.py CLI versions of the app, enable specific vector dimensions by setting the following env variable: (choices are default (105), battle_v11 (11), and battle_v21 (21))
 
-```
-export BATTLESHIP_TABLE=vb.battle_v21
-```
- 
-## when battle_v21 is selected, an 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
 
-## when battle_v11 is selected, an 11 dimension vector is used to represent the ships. (this is less accurate) 
-
-```
-export BATTLESHIP_TABLE=vb.battle_v11
-```
-
-## 105 dimensions was the original attempt by this author and is less efficient and no more accurate than v21:
-
-```
-export BATTLESHIP_TABLE=vb.battleship
-```
+### Additional info / options
 
 If you wish to execute other sql -- The following command connects using the provided SQL CLI:
 
@@ -223,31 +254,7 @@ example:
 python3 human_player.py 45 10
 ```
 
-## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
-```
-You need at least the first arg of the following ordered args: <percentage> <max_attempts> <sleep_time> <should_switch>
-Example: python3 battle_bot.py 85 200
-Example: python3 battle_bot.py 65 1000 0 False
-```
 
-```
-python3 battle_bot.py <percentage> <max_attempts> <sleep_time> <should_switch>
-```
-
-Example uses default of 200 millis sleep when ship detected:
-
-```
-python3 battle_bot.py 70
-```
-
-Example user-specified sleep time of 10 millis when ship detected:
-
-```
-python3 battle_bot.py 70 100 10
-```
-
-## NB: the battle_bot runs until it hits a ship with an exact match on type, location, and quadrant
-## It will use the match_percentage_threshold as a guide to hone in on ship_type and quadrant which should speed up finding exact matches  (the lower the threshold, the more sticky the attampts will be to the same quadrant and ship_type)
 
 example:
 ```
