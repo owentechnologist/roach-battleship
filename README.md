@@ -5,6 +5,8 @@ This repo is a demo of using Euclidean distance with Vector Search to identify s
 
 It could be an interesting challenge for the curious to enhance the battle_bot logic to make it smarter.  Have fun!
 
+[Skip to Web-ui Section](## Web-Based UI: Play Vector Battleship in your browser)
+
 ## NB: The default vectorization uses 105 elements/dimensions, there are optional additional table and strategies for the vector embeddings that reduces their size from 105 to 11, or 21 dimensions.  These embedding models are very different in their behavior which can illustrate the importance of good training and careful selection of the optimal model for a particular task.  
 
 ### Setup and Run
