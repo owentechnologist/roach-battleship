@@ -14,13 +14,13 @@ It could be an interesting challenge for the curious to enhance the battle_bot l
 ## Python-preparation Steps for running the program on your machine:
 
 
-a. Create a virtual environment:
+- **A: Create a virtual environment:**
 
 ```
 python3 -m venv rbenv
 ```
 
-b. Activate it:  [This step is repeated anytime you want this venv back]
+- **B. Activate it:  [This step is repeated anytime you want this venv back]**
 
 ```
 source rbenv/bin/activate
@@ -47,7 +47,7 @@ psycopg[binary]
 
 ```
 
-c. Install the libraries: [only necesary to do this one time per environment]
+- **C. Install the libraries: [only necesary to do this one time per environment]**
 
 ```
 pip3 install -r requirements.txt
@@ -57,7 +57,7 @@ pip3 install -r requirements.txt
 ## install and Initialize a cockroach database to act as a vectorDB:
 
 
-** download cockroachdb binary (you can use a single instance for testing) 
+- **download cockroachdb binary (you can use a single instance for testing)** 
 
 for mac you do:
 ```
@@ -74,7 +74,7 @@ which cockroach
 (There are options there for Linux and Windows as well)
 </em>
 
-## You can start a single node instance of cockroachDB in the following way:
+### You can start a single node instance of cockroachDB in the following way:
 
 to keep things as simple as possible, start an instance requiring no TLS (Transport Layer Security):
 
@@ -90,7 +90,7 @@ This local instance of cockroachDB will run listening on port 26257 (for SQL and
 
 This local instance will also listen on port 8080 with its web-browser-serving dbconsole UI 
 
-# DB SETUP!
+## DB SETUP!
 
 ### From a separate shell you can connect to this instance, create a database and the tables needed to begin:
 
@@ -107,15 +107,15 @@ When running populate_quadrants.py, batle_bot.py or human_player.py CLI versions
 export BATTLESHIP_TABLE=vb.battle_v21
 ```
  
-## when battle_v21 is selected, a 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
+### when battle_v21 is selected, a 21 dimension vector is used to represent the ships (this one is the 'Goldilocks' option)
 
-## when battle_v11 is selected, an 11 dimension vector is used to represent the ships. (this is less accurate) 
+### when battle_v11 is selected, an 11 dimension vector is used to represent the ships. (this is less accurate) 
 
 ```
 export BATTLESHIP_TABLE=vb.battle_v11
 ```
 
-## 105 dimensions was the original attempt by this author and is less efficient and no more accurate than v21:
+### 105 dimensions was the original attempt by this author and is less efficient and no more accurate than v21:
 
 ```
 export BATTLESHIP_TABLE=vb.battleship
@@ -128,7 +128,7 @@ export BATTLESHIP_TABLE=vb.battleship
 export BATTLESHIP_TABLE=vb.battle_v21
 ```
 
-## Run the populate_quadrants.py program to write a bunch of battleships into the database:
+- **Run the populate_quadrants.py program to write a bunch of battleships into the database:**
 
 ```
 python3 populate_quadrants.py <number_of_ships_to_create> <number_of_quadrants>
@@ -146,7 +146,7 @@ example with large dataset:
 python3 populate_quadrants.py 15000 3000
 ```
 
-## Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):
+- **Run a battle bot that repeatedly generates ship vectors and then tests for their overlap in the vector space (it gets 100 tries):**
 ```
 You need at least the first arg of the following ordered args: <percentage> <max_attempts> <sleep_time> <should_switch>
 Example: python3 battle_bot.py 85 200
@@ -185,7 +185,7 @@ python3 bottle_web_ui.py
 
 The server will start on http://localhost:8000
 
-5. Open your browser and navigate to:
+- **Open your browser and navigate to:**
 
 ```
 http://localhost:8000
