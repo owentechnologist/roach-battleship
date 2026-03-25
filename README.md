@@ -198,6 +198,7 @@ http://localhost:8000
 ### How to Play
 
 - **Select Vector Dimensions**: Choose which Vector Table to target (dropdown at top of grid)
+- **Click 'Start Game'**: Each Game is specific to a type of vector and the table holding those ships
 - **Select Quadrant**: Choose which quadrant to target (dropdown at top of grid)
 - **Choose Ship Type**: Select submarine, destroyer, skiff, or aircraft carrier
 - **Select Coordinates**: Click on the grid or use the X/Y sliders to pick coordinates
